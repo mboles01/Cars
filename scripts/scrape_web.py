@@ -16,27 +16,33 @@ import requests
 from user_agent import generate_user_agent
 import time
 import numpy.random as npr
+import csv
+import pandas as pd
+
 
 ### SCRAPE AUTOTRADER ###
 
 # stipulate search parameters
 baseurl = 'https://www.autotrader.com/cars-for-sale/Used+Cars/'
 location = 'Burlingame+CA-94010?'
-listings = 'listingTypes=USED&' # listingTypes=USED%2CNEW&
+listingtype = 'listingTypes=USED&' # listingTypes=USED%2CNEW&
 radius = 'searchRadius=100&'
 zipcode = 'zip=94010&'
 includenew = 'marketExtension=include&isNewSearch=true&'
 sorting = 'sortBy=relevance&numRecords=100&'
 firstrecord = 'firstRecord='
 
-for index in range(0,500,100):
+for index in range(1000,2000,100):
     
     # build in wait time
-    wait_time = npr.randint(1,6)
+    wait_time = npr.randint(10,25)
     time.sleep(wait_time)
+    
+    # print status update
+    print('Scraping data for page with first listing index = %s ' % index)
 
     # compile full URL
-    url = baseurl + location + listings + radius + zipcode + includenew + sorting + firstrecord + str(index)
+    url = baseurl + location + listingtype + radius + zipcode + includenew + sorting + firstrecord + str(index)
     
     # get homepage session
     session = requests.Session()
@@ -48,10 +54,29 @@ for index in range(0,500,100):
     
     # loop over all entries and collect this data
     listings = []
-    for index in range(0,103):
-        xpath = '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div[1]/div[2]/div[3]/div/div[2]/script[' + str(index) + ']/text()'
+    for item in range(0,103):
+        xpath = '/html/body/div[1]/div/div[2]/div[2]/div/div[2]/div[1]/div[2]/div[3]/div/div[2]/script[' + str(item) + ']/text()'
         listing_individual = tree.xpath(xpath)
         listings.append(listing_individual)
+    
+    # flatten list of lists
+    listings = [item for sublist in listings for item in sublist]
+    
+    # # split on commas
+    # newlist = []
+    # for word in listings:
+    #     word = word.split(",")
+    #     newlist.extend(word)  # <----
+    
+    # create pandas dataframe
+    listings_df = pd.DataFrame(listings)
+    
+    # save each batch of 100 listings
+    listings_df.to_csv('listings_' + str(index) + '_to_' + str(index+100))
+
+
+
+
 
 
 
