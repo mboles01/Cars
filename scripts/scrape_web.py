@@ -20,22 +20,22 @@ import pandas as pd
 
 ### SCRAPE AUTOTRADER ###
 
-
+https://www.autotrader.com/cars-for-sale/New+Cars/2020/San+Francisco+CA-94107?listingTypes=NEW&searchRadius=100&zip=94107&startYear=2020&endYear=2020&marketExtension=include&isNewSearch=true&sortBy=distanceASC&numRecords=25&firstRecord=0
 
 # stipulate search parameters
-baseurl = 'https://www.autotrader.com/cars-for-sale/Certified+Cars/'
+baseurl = 'https://www.autotrader.com/cars-for-sale/New+Cars/' # 'https://www.autotrader.com/cars-for-sale/Certified+Cars/'
 location = 'San+Francisco+CA-94107?'
-listingtype = 'listingTypes=NEW&' # 'listingTypes=CERTIFIED%2CUSED&' # 'listingTypes=USED%2CCERTIFIED%2CNEW&' # listingTypes=USED%2CNEW& 'listingTypes=USED&'
+listingtype = 'listingTypes=NEW&' # 'listingTypes=CERTIFIED%2CUSED&' 
 radius = 'searchRadius=100&' # 'searchRadius=300&'
 zipcode = 'zip=94107&'
-includenew = 'marketExtension=include&' #'marketExtension=include&isNewSearch=true&'
+includenew = 'marketExtension=include&isNewSearch=true&' # 'marketExtension=include&'
 # style = 'vehicleStyleCodes=SEDAN&'
-isnew = 'isNewSearch=false&'
+isnew = 'isNewSearch=true&' # 'isNewSearch=false&'
 sorting = 'sortBy=distanceASC&' # 'sortBy=mileageASC&' 'sortBy=yearDESC&'
 number = 'numRecords=100&'
 firstrecord = 'firstRecord='
 
-for year in range(2010,2021,1):
+for year in range(2017,2018,1):
     
     # print status update
     print('Scraping %s' % year)
@@ -44,7 +44,7 @@ for year in range(2010,2021,1):
     startyear = 'startYear=' + str(year) + '&'
     endyear = 'endYear=' + str(year) + '&'
 
-    for index in range(0,100,100):
+    for index in range(0,300,100):
         
         # compile full URL
         url = baseurl + yearmade + location + listingtype + radius + zipcode + startyear + includenew + endyear + isnew + sorting + number + firstrecord + str(index)        
@@ -83,7 +83,7 @@ for year in range(2010,2021,1):
         listings_df = pd.DataFrame(listings)
         
         # save each batch of 100 listings
-        listings_df.to_csv('../data/raw/listings_' + str(year) + '_' + str(int(index/100+1)))
+        listings_df.to_csv('../data/raw/listings_' + str(year) + '_' + str(int(index/100+1)) + '.csv')
 
 
 
