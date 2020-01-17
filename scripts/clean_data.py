@@ -26,33 +26,41 @@ data_raw = pd.concat((pd.read_csv(f) for f in all_files))
 
 
 # loop through each line in raw data
-for line in data_raw.iloc[0]:
-    print(line)
-    
-data_raw.iloc[0][0]
+import ast
+from helper_functions import flatten
 
-# pull first 100 entries for testing
+data_df = pd.DataFrame()
+for line in data_raw['0'].iloc[:-1]:
+    
+    # convert string to dictionary
+    line_dict = ast.literal_eval(line)
+    
+    # flatten dictionary
+    line_flat = flatten(line_dict)
+    
+    # convert to dictionary
+    line_flat_df = pd.DataFrame(line_flat, index=[0])
+    
+    # append to existing dataframe
+    data_df = data_df.append(line_flat_df, ignore_index=True)
+    
+# save dataframe as .csv
+data_df.to_csv('../data/clean/listings_clean_1.csv')
+
+
+
+
+
 data_subset = data_raw[:100]
 data_entry = data_subset.iloc[0][0]
-type(data_subset.iloc[0][0])
+type(data_entry)
+a_dict = ast.literal_eval(data_entry)
+type(a_dict)
 
-# convert string to dictionary
-import ast
-a = ast.literal_eval(data_entry)
-type(a)
+line = data_raw['0'].iloc[:1][0]
 
-# flatten nested dictionaries
+data_subset.iloc[2][0]
 
-import collections
-def flatten(d, parent_key='', sep='_'):
-    items = []
-    for k, v in d.items():
-        new_key = parent_key + sep + k if parent_key else k
-        if isinstance(v, collections.MutableMapping):
-            items.extend(flatten(v, new_key, sep=sep).items())
-        else:
-            items.append((new_key, v))
-    return dict(items)
 
 a_flat = flatten(a)
 
