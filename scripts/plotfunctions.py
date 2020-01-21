@@ -129,13 +129,19 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     # force integers on x-axis
     from matplotlib.ticker import MaxNLocator
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-    
+        
     # set up text box
-    props = dict(facecolor='white', alpha=1.0)
-    textbox = r'$P(t) = a{\bullet}exp(-bt) + c$' + '\n$a$ = %5.0f \n$b$ = %5.3f \n$c$ =%5.0f' % tuple(popt) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    props_1 = dict(facecolor='white', edgecolor='none', alpha=0.67)
+    props_2 = dict(facecolor='white', edgecolor='none', alpha=0.67)
     
-    ax.text(0.545, 0.95, textbox, transform = ax.transAxes, fontsize = 18, 
-            fontname = 'Helvetica', verticalalignment = 'top', bbox = props)
+    textbox_1 = r'$P(t) = a{\bullet}exp(-bt) + c$'
+    textbox_2 = '$a$ = %5.0f \n$b$ = %0.3f \n$c$ =%5.0f' % (popt[0], popt[1], popt[2]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    
+    ax.text(0.55, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
+            fontname = 'Helvetica', verticalalignment = 'top', bbox = props_1)
+    
+    ax.text(0.785, 0.825, textbox_2, transform = ax.transAxes, fontsize = 18, 
+            fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
     
     for tick in ax.get_xticklabels():
         tick.set_fontname('Helvetica')
@@ -175,7 +181,10 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     # create dataframe with age and list price
     miles_listprice = pd.DataFrame({'Miles': car_model_data_2['Mileage'],
                               'List Price': car_model_data_2['Price'],
-                              }).dropna()
+                              })   #.dropna()
+    
+    # # convert miles to thousands
+    # miles_listprice['Miles'] = miles_listprice['Miles']/1000
         
     # fit data to function
     from scipy.optimize import curve_fit
@@ -184,8 +193,8 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     
     popt, pcov = curve_fit(exp_function, miles_listprice['Miles'], 
                            miles_listprice['List Price'], 
-                           absolute_sigma=False, maxfev=1000) #,
-    #                       bounds=((10000, 0.1, 0), (200000, 1, 100000)))
+                           absolute_sigma=False, maxfev=1000,
+                           bounds=((10000, 0, 0), (200000, .003, 50000)))
     
     # create predicted list price vs. miles 
     price_predicted = pd.DataFrame({'Miles': range(0,max(miles_listprice['Miles'].astype(int))+1,1),
@@ -223,8 +232,9 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     plt.plot(x_axis_smooth, exp_function(x_axis_smooth, *popt), '#ff4c00', linewidth=3)
     
     # set x- and y- labels
-    xlabel = r'Age ($\it{t}$, years)'
-    ylabel = r'Price ($\it{P}$, \$k)' 
+    xlabel = r'Miles ($\it{m}$, k)'
+    ylabel = r'Price ($\it{P}$, \$k)'
+    xscale = 1000
     yscale = 1000
 
     plt.xlabel(xlabel, fontsize = 18, fontname = 'Helvetica')
@@ -233,16 +243,26 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     ax.tick_params(axis = 'x', labelsize = 14)
     ax.tick_params(axis = 'y', labelsize = 14)
     
-    # force integers on x-axis
-    from matplotlib.ticker import MaxNLocator
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    # # force integers on x-axis
+    # from matplotlib.ticker import MaxNLocator
+    # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    
+    # get b in scientific notation
+    from decimal import Decimal
+    b_sci = '%.3E' % Decimal(popt[1])
     
     # set up text box
-    props = dict(facecolor='white', alpha=1.0)
-    textbox = r'$P(t) = a{\bullet}exp(-bt) + c$' + '\n$a$ = %5.0f \n$b$ = %5.3f \n$c$ =%5.0f' % tuple(popt) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    props_1 = dict(facecolor='white', edgecolor='none', alpha=0.67)
+    props_2 = dict(facecolor='white', edgecolor='none', alpha=0.67)
     
-    ax.text(0.545, 0.95, textbox, transform = ax.transAxes, fontsize = 18, 
-            fontname = 'Helvetica', verticalalignment = 'top', bbox = props)
+    textbox_1 = r'$P(m) = a{\bullet}exp(-bm) + c$'
+    textbox_2 = '$a$ = %5.0f \n$b$ = %s \n$c$ =%5.0f' % (popt[0], float(b_sci), popt[2]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    
+    ax.text(0.5, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
+            fontname = 'Helvetica', verticalalignment = 'top', bbox = props_1)
+    
+    ax.text(0.72, 0.825, textbox_2, transform = ax.transAxes, fontsize = 18, 
+            fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
     
     for tick in ax.get_xticklabels():
         tick.set_fontname('Helvetica')
@@ -252,7 +272,10 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     plt.rcParams['axes.unicode_minus'] = False
     plt.grid(); ax.grid(color=(.9, .9, .9)); ax.set_axisbelow(True)
     
+    # scale x- and y-axes
+    ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x/xscale))
     ticks = ticker.FuncFormatter(lambda y, pos: '{0:g}'.format(y/yscale))
+    ax.xaxis.set_major_formatter(ticks)
     ax.yaxis.set_major_formatter(ticks)
     
     # save figure, plot figure

@@ -47,22 +47,26 @@ data = all_listings_clean2
 # exclude models older than 
 newerthan = 1995
 
+###
+
 # # select one make/model combination
 # model = 'Civic'
 # plot_depr(data, model, newerthan)
 
 # collect top n models by count frequency
 model_counts = all_listings_clean2.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
-selection = model_counts[:5]
+selection = model_counts[:100]
+
+###
 
 # plot age depreciation curves for selected models
 cars = selection
-fit_data = pd.DataFrame()
+fit_data_age = pd.DataFrame()
 for counter, line in enumerate(cars.index,1):
     print(counter, line)
     model = line
     try:
-        fit_data_age = plot_depr_age(data, model, newerthan, counter, fit_data)
+        fit_data_age = plot_depr_age(data, model, newerthan, counter, fit_data_age)
     except Exception:
         print('Exception')
         continue
@@ -71,6 +75,8 @@ for counter, line in enumerate(cars.index,1):
 # fit_data.columns=['Entry', 'Make', 'Model', 'a', 'b', 'c', 'R2 (median)', 'R2 (all)']
 # fit_data.to_csv('../data/depreciation/fit_data_age.csv', index=False)
 
+###
+
 # plot miles depreciation curves for selected models
 from plotfunctions import plot_depr_miles
 
@@ -78,18 +84,16 @@ cars = selection
 fit_data_miles = pd.DataFrame()
 for counter, line in enumerate(cars.index,1):
     print(counter, line)
-    model = line
-    fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data)
-    
+    model = line    
     try:
-        fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data)
+        fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data_miles)
     except Exception:
         print('Exception')
         continue
 
 # rename fit data columns and save
-fit_data.columns=['Entry', 'Make', 'Model', 'a', 'b', 'c', 'R2 (median)', 'R2 (all)']
-fit_data.to_csv('../data/depreciation/fit_data_miles.csv', index=False)
+fit_data_miles.columns=['Entry', 'Make', 'Model', 'a', 'b', 'c', 'R2 (median)', 'R2 (all)']
+fit_data_miles.to_csv('../data/depreciation/fit_data_miles.csv', index=False)
 
 
 
