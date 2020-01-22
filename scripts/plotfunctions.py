@@ -37,7 +37,7 @@ def plot_hist(data, binwidth, textbox, xmin, xmax, xlabel, ylabel, figure_name):
     
 # plot depreciation curve - age
     
-def plot_depr_age(data, model, newerthan, counter, fit_data, save):
+def plot_depr_age(data, model, newerthan, counter, save): # fit_data
     
     import numpy as np
     import pandas as pd

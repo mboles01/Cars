@@ -87,3 +87,6 @@ def fit_depr(data, model, newerthan, counter, fit_data):
     # return fit data
     return(fit_data)
     
+def exp_function(x, a, b, c):
+    import numpy as np
+    return a * np.exp(-b * x) + c
