@@ -38,10 +38,10 @@ def plot_hist(data, binwidth, textbox, xmin, xmax, xlabel, ylabel, figure_name):
 # plot depreciation curve - age
     
 def plot_depr_age(data, model, newerthan, counter, fit_data):
-        
-    import pandas as pd
+    
     import numpy as np
-
+    import pandas as pd
+    
     # get model data from master list
     car_model_data_1 = data[data['Model'] == model]
     make = car_model_data_1['Make'].iloc[0]
@@ -59,9 +59,9 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     
     # create x- and y- columns for fit
     year_age_median_price = pd.DataFrame({'Year': model_data_grouped_year['Year'],
-                               'Age': 2020 - model_data_grouped_year['Year'],
-                               'Median Price': model_data_grouped_year['Price']
-                               })
+                                'Age': 2020 - model_data_grouped_year['Year'],
+                                'Median Price': model_data_grouped_year['Price']
+                                })
     
     # fit data to function
     from scipy.optimize import curve_fit
@@ -69,15 +69,15 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
         return a * np.exp(-b * x) + c
     
     popt, pcov = curve_fit(exp_function, year_age_median_price['Age'], 
-                           year_age_median_price['Median Price'], 
-                           absolute_sigma=False, maxfev=1000,
-                           bounds=((10000, 0.1, 0), (200000, 1, 100000)))
+                            year_age_median_price['Median Price'], 
+                            absolute_sigma=False, maxfev=1000,
+                            bounds=((10000, 0.1, 0), (200000, 1, 100000)))
     
     # create predicted list price vs. age
     price_predicted = pd.DataFrame({'Age': range(0,max(year_age_median_price['Age'])+1,1),
                                     'Predicted Price': exp_function(range(0,max(year_age_median_price['Age'])+1,1), 
                                                                     popt[0], popt[1], popt[2]), 
-                                   })
+                                    })
     
     # combine list prices and predicted list prices
     age_listprice_predprice = age_listprice.merge(price_predicted, on='Age', how='left')
@@ -88,16 +88,16 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     ss_tot_all = np.sum((age_listprice_predprice['List Price'] - np.mean(age_listprice_predprice['List Price']))**2)   # total sum of squares
     r_squared_all = 1 - (ss_res_all / ss_tot_all)
     
-    # get fit quality data (diff bw median price and predicted value)
-    year_age_median_predicted_price = year_age_median_price.merge(price_predicted, on='Age', how='left')    
-    residuals_median = year_age_median_predicted_price['Predicted Price'] - year_age_median_predicted_price['Median Price']
-    ss_res_median = np.sum(residuals_median**2)   # residual sum of squares
-    ss_tot_median = np.sum((year_age_median_price['Median Price'] - np.mean(year_age_median_price['Median Price']))**2)   # total sum of squares
-    r_squared_median = 1 - (ss_res_median / ss_tot_median)
+    # # get fit quality data (diff bw median price and predicted value)
+    # year_age_median_predicted_price = year_age_median_price.merge(price_predicted, on='Age', how='left')    
+    # residuals_median = year_age_median_predicted_price['Predicted Price'] - year_age_median_predicted_price['Median Price']
+    # ss_res_median = np.sum(residuals_median**2)   # residual sum of squares
+    # ss_tot_median = np.sum((year_age_median_price['Median Price'] - np.mean(year_age_median_price['Median Price']))**2)   # total sum of squares
+    # r_squared_median = 1 - (ss_res_median / ss_tot_median)
         
-    # store fit data in dataframe
-    fit_data_temp = pd.DataFrame(data = [[counter, make, model, popt[0], popt[1], popt[2], r_squared_median, r_squared_all]])
-    fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
+    # # store fit data in dataframe
+    # fit_data_temp = pd.DataFrame(data = [[counter, make, model, popt[0], popt[1], popt[2], r_squared_median, r_squared_all]])
+    # fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
         
     # plot scatter data
     import matplotlib.pyplot as plt
@@ -106,7 +106,6 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     
     # set up figure axis
     fig, ax = plt.subplots(1, 1, figsize=(8,5))
-    props = dict(facecolor='white', alpha=1.0)
     ax.scatter(age_listprice['Age'], 
                age_listprice['List Price'], 
                edgecolor='black', facecolor='blue', alpha=0.33)
@@ -159,8 +158,8 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     plt.savefig(figure_name, dpi = 600)
     plt.show()
 
-    # return fit data
-    return(fit_data)
+    # # return fit data
+    # return(fit_data)
 
 
 
@@ -183,8 +182,6 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
                               'List Price': car_model_data_2['Price'],
                               })   #.dropna()
     
-    # # convert miles to thousands
-    # miles_listprice['Miles'] = miles_listprice['Miles']/1000
         
     # fit data to function
     from scipy.optimize import curve_fit
@@ -222,7 +219,6 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     
     # set up figure axis
     fig, ax = plt.subplots(1, 1, figsize=(8,5))
-    props = dict(facecolor='white', alpha=1.0)
     ax.scatter(miles_listprice['Miles'], 
                miles_listprice['List Price'], 
                edgecolor='black', facecolor='blue', alpha=0.33)
@@ -283,5 +279,5 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     plt.savefig(figure_name, dpi = 600)
     plt.show()
 
-    # return fit data
-    return(fit_data)
+    # # return fit data
+    # return(fit_data)

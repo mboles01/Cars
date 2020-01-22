@@ -55,9 +55,33 @@ newerthan = 1995
 
 # collect top n models by count frequency
 model_counts = all_listings_clean2.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
-selection = model_counts[:100]
+selection = model_counts[:5]
 
 ###
+
+# create depreciation tables across models
+from fit_functions import fit_depr
+
+selection = model_counts[:100]
+data = all_listings_clean2
+newerthan = 1995
+bounds_age = ((10000, 0.05, 0), (200000, 1, 50000))
+bounds_miles = ((10000, 0, 0), (200000, .003, 50000))
+
+fit_data = pd.DataFrame()
+for counter, line in enumerate(selection.index,1):
+    print(counter, line)
+    model = line
+    # fit_data = fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles)
+    try:
+        fit_data = fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles)
+    except Exception:
+        print('*** Exception ***')
+        continue
+
+fit_data.to_csv('../data/depreciation/fit_data_3.csv', index=False)
+
+
 
 # plot age depreciation curves for selected models
 cars = selection
@@ -71,9 +95,6 @@ for counter, line in enumerate(cars.index,1):
         print('Exception')
         continue
 
-# # rename fit data columns and save
-# fit_data.columns=['Entry', 'Make', 'Model', 'a', 'b', 'c', 'R2 (median)', 'R2 (all)']
-# fit_data.to_csv('../data/depreciation/fit_data_age.csv', index=False)
 
 ###
 
@@ -90,19 +111,4 @@ for counter, line in enumerate(cars.index,1):
     except Exception:
         print('Exception')
         continue
-
-# rename fit data columns and save
-fit_data_miles.columns=['Entry', 'Make', 'Model', 'a', 'b', 'c', 'R2 (median)', 'R2 (all)']
-fit_data_miles.to_csv('../data/depreciation/fit_data_miles.csv', index=False)
-
-
-
-
-
-
-
-
-
-
-
 
