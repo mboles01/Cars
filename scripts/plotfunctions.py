@@ -37,7 +37,7 @@ def plot_hist(data, binwidth, textbox, xmin, xmax, xlabel, ylabel, figure_name):
     
 # plot depreciation curve - age
     
-def plot_depr_age(data, model, newerthan, counter, fit_data):
+def plot_depr_age(data, model, newerthan, counter, fit_data, save):
     
     import numpy as np
     import pandas as pd
@@ -153,9 +153,12 @@ def plot_depr_age(data, model, newerthan, counter, fit_data):
     ticks = ticker.FuncFormatter(lambda y, pos: '{0:g}'.format(y/yscale))
     ax.yaxis.set_major_formatter(ticks)
     
-    # save figure, plot figure
-    figure_name = '../images/depreciation/age_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
-    plt.savefig(figure_name, dpi = 600)
+    # save figure
+    if save == True:
+        figure_name = '../images/depreciation/age_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
+        plt.savefig(figure_name, dpi = 600)
+    else:
+        pass
     plt.show()
 
     # # return fit data
@@ -281,3 +284,12 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
 
     # # return fit data
     # return(fit_data)
+
+
+
+
+
+
+
+
+

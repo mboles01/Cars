@@ -7,7 +7,7 @@ Created on Tue Jan 21 11:23:22 2020
 """
 
 
-def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles):
+def fit_depr(data, model, newerthan, counter, fit_data, emp_data, bounds_age, bounds_miles):
         
     import pandas as pd
     import numpy as np
@@ -15,6 +15,7 @@ def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles
     # get model data from master list
     car_model_data_1 = data[data['Model'] == model]
     make = car_model_data_1['Make'].iloc[0]
+    body = car_model_data_1['Body'].iloc[0]
     
     # filter data based on excluded years
     car_model_data_2 = car_model_data_1[car_model_data_1['Year'] > newerthan]
@@ -56,20 +57,20 @@ def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles
     
     
     ### CREATE PRICE PREDICTIONS ###
+    try:
+        # create predicted list price vs. age
+        price_predicted_age = pd.DataFrame({'Age': range(0,max(year_age_median_price['Age'])+1,1),
+                                        'Predicted Price': exp_function(range(0,max(year_age_median_price['Age'])+1,1), 
+                                                                        popt_age[0], popt_age[1], popt_age[2])
+                                       })
+        
+        # create predicted list price vs. mileage
+        price_predicted_miles = pd.DataFrame({'Miles': range(0,max(car_model_data_2['Mileage'].astype(int))+1,1),
+                                        'Predicted Price': exp_function(range(0,max(car_model_data_2['Mileage'].astype(int))+1,1), 
+                                                                        popt_miles[0], popt_miles[1], popt_miles[2]) 
+                                       })
     
-    # create predicted list price vs. age
-    price_predicted_age = pd.DataFrame({'Age': range(0,max(year_age_median_price['Age'])+1,1),
-                                    'Predicted Price': exp_function(range(0,max(year_age_median_price['Age'])+1,1), 
-                                                                    popt_age[0], popt_age[1], popt_age[2])
-                                   })
-    
-    # create predicted list price vs. mileage
-    price_predicted_miles = pd.DataFrame({'Miles': range(0,max(car_model_data_2['Mileage'].astype(int))+1,1),
-                                    'Predicted Price': exp_function(range(0,max(car_model_data_2['Mileage'].astype(int))+1,1), 
-                                                                    popt_miles[0], popt_miles[1], popt_miles[2]) 
-                                   })
-    
-    # create predicted list price vs. age (conventional wisdom: 24% depr year 1, then 15% thereafter)
+# create predicted list price vs. age (conventional wisdom: 24% depr year 1, then 15% thereafter)
     if year_age_median_price[year_age_median_price['Age'] == 0].empty:
         r_squared_age_cw = np.nan
         
@@ -91,7 +92,6 @@ def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles
         ss_tot_age_cw = np.sum((age_listprice_predprice_cw['List Price'] - np.mean(age_listprice_predprice_cw['List Price']))**2)   # total sum of squares
         r_squared_age_cw = 1 - (ss_res_age_cw / ss_tot_age_cw)
     
-    # price_predicted_cw
 
     # combine list prices and predicted list prices for age, mileage
     age_listprice_predprice = age_listprice.merge(price_predicted_age, on='Age', how='left')
@@ -109,12 +109,14 @@ def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles
     ss_tot_miles = np.sum((miles_listprice_predprice['List Price'] - np.mean(miles_listprice_predprice['List Price']))**2)   # total sum of squares
     r_squared_miles = 1 - (ss_res_miles / ss_tot_miles)
 
-
+    # create median price table for joining with other models
+    median_price_temp = year_age_median_price[['Age', 'Median Price']].rename(columns={'Median Price': str(model)})
                 
     # store fit data in dataframe
     fit_data_temp = pd.DataFrame({'Entry': counter,
                                   'Make': make,
                                   'Model': model,
+                                  'Body': body,
                                   'Fit_age_a': popt_age[0], 
                                   'Fit_age_b': popt_age[1], 
                                   'Fit_age_c': popt_age[2],
@@ -125,7 +127,22 @@ def fit_depr(data, model, newerthan, counter, fit_data, bounds_age, bounds_miles
                                   'Fit_miles_R2': [r_squared_miles],
                                   'Fit_age_cw_R2': r_squared_age_cw, 
                                   })
-
+    
+    
+    # combine model-specific fit- and median price data with growing dataframes for each
     fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
-    return(fit_data)                                  
+    if emp_data.empty:
+        emp_data = median_price_temp
+    else:
+        emp_data = emp_data.merge(median_price_temp, on='Age', how='outer')
+    
+    # return fit data and median price
+    return(fit_data, emp_data)                                  
                                   
+    
+    
+    
+    except:
+        print('*** Fit did not converge ***')
+        pass
+    
