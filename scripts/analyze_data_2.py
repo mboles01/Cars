@@ -13,9 +13,9 @@ os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/sc
 # open listings data
 import pandas as pd
 listings_data = pd.read_csv('../data/clean/all_listings_clean_2.csv')
-fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_5.csv')
-emp_data = pd.read_csv('../data/depreciation/depreciation_all_models/emp_data_5.csv')
-pred_data = pd.read_csv('../data/depreciation/depreciation_all_models/pred_data_5.csv')
+fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_6.csv')
+emp_data = pd.read_csv('../data/depreciation/depreciation_all_models/emp_data_6.csv')
+pred_data = pd.read_csv('../data/depreciation/depreciation_all_models/pred_data_6.csv')
 
 # filter fit data to exclude poor fit quality
 fit_data_filtered = fit_data[fit_data['Fit_age_R2'] > 0.67]
@@ -53,9 +53,11 @@ plot_depr_age(data, model, newerthan, counter, save=False)
 ### second plot: depreciation in context of segment ###
 # model = 'Accord' # input
 
-from plotfunctions_2 import plot_depr_age_segment
-plot_depr_age_segment(model, emp_data, fit_data_filtered, pred_data, save=False)
+# from plotfunctions_2 import plot_depr_age_segment
+# plot_depr_age_segment(model, emp_data, fit_data_filtered, pred_data, save=False)
 
+from plotfunctions_2 import plot_depr_age_segment2
+plot_depr_age_segment2(model, fit_data_filtered, pred_data, save=False)
 
 
 
