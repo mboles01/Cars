@@ -13,7 +13,7 @@ os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/sc
 # open listings data
 import pandas as pd
 listings_data = pd.read_csv('../data/clean/all_listings_clean_2.csv')
-fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_6.csv')
+fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_6_clean.csv')
 emp_data = pd.read_csv('../data/depreciation/depreciation_all_models/emp_data_6.csv')
 pred_data = pd.read_csv('../data/depreciation/depreciation_all_models/pred_data_6.csv')
 
@@ -88,9 +88,9 @@ depr_top_n = depr_top_n.sort_values('Half life', ascending=False)
 ### CREATE COMBINATION PLOT ###
 
 # random generator
+selection = model_counts_filtered[:125]
 import numpy.random as npr
-model = model_counts_filtered.iloc[npr.randint(0,len(model_counts_filtered))][2]
-print(model)
+model = selection.iloc[npr.randint(0,len(selection))][2]
 
 from plotfunctions_3 import plot_combo_depr
 plot_combo_depr(listings_data, fit_data_filtered, pred_data, model, newerthan, counter, save=False)
