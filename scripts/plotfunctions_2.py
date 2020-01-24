@@ -5,7 +5,12 @@ Created on Wed Jan 22 13:33:02 2020
 
 @author: michaelboles
 """
+
+# plot textbox formatted for three-parameter fit: P(t) = a*exp(-bt)+c
+
 def plot_depr_age_segment(model, emp_data, fit_data_filtered, pred_data, save=False):
+    
+    # plots empirical data of given model with fits from segment 
     
     import pandas as pd
     
@@ -101,6 +106,8 @@ def plot_depr_age_segment(model, emp_data, fit_data_filtered, pred_data, save=Fa
     
 
 def plot_depr_age_segment2(model, fit_data_filtered, pred_data, save=False):
+    
+    # plots fit data of given model with fits from segment 
     
     import pandas as pd
     

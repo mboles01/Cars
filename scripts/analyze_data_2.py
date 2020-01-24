@@ -85,7 +85,18 @@ depr_top_n['Half life'] = 0.693/depr_top_n['Fit_age_b']
 depr_top_n = depr_top_n.sort_values('Half life', ascending=False)
 
 
-plt.table(depr_top_n)
+### CREATE COMBINATION PLOT ###
+
+# random generator
+import numpy.random as npr
+model = model_counts_filtered.iloc[npr.randint(0,len(model_counts_filtered))][2]
+print(model)
+
+from plotfunctions_3 import plot_combo_depr
+plot_combo_depr(listings_data, fit_data_filtered, pred_data, model, newerthan, counter, save=False)
+
+
+
 
 
 
