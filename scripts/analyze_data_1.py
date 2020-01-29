@@ -8,7 +8,7 @@ Created on Sun Jan 19 20:30:31 2020
 
 # set up working directory
 import os
-os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/scripts') 
+os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts') 
 
 # open listings dataframe
 import pandas as pd

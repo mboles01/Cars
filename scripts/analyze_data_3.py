@@ -8,7 +8,7 @@ Created on Sun Jan 19 20:30:31 2020
 
 # set up working directory
 import os
-os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/scripts') 
+os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts') 
 
 # open listings dataframe
 import pandas as pd
@@ -193,11 +193,4 @@ fit_data_miles = pd.DataFrame()
 for counter, line in enumerate(cars.index,1):
     print(counter, line)
     model = line    
-    fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data_miles)
-
-    try:
-        fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data_miles)
-    except Exception:
-        print('Exception')
-        continue
-
+    plot_depr_miles(listings, model, newerthan, counter, fit_data_miles)

@@ -324,7 +324,7 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     # plot scatter data
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
-    plt.scatter(miles_listprice['Miles'], miles_listprice['List Price'])
+    # plt.scatter(miles_listprice['Miles'], miles_listprice['List Price'])
     
     # set up figure axis
     fig, ax = plt.subplots(1, 1, figsize=(8,5))
@@ -383,9 +383,9 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     ax.xaxis.set_major_formatter(ticks)
     ax.yaxis.set_major_formatter(ticks)
     
-    # save figure, plot figure
-    figure_name = '../images/depreciation/miles_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
-    plt.savefig(figure_name, dpi = 600)
+    # # save figure, plot figure
+    # figure_name = '../images/depreciation/miles_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
+    # plt.savefig(figure_name, dpi = 600)
     plt.show()
 
     # # return fit data
