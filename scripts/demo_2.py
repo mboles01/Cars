@@ -8,7 +8,7 @@ Created on Sun Jan 19 20:30:31 2020
 
 # set up working directory
 import os
-os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/scripts') 
+os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts') 
 
 # open full listings data set and depreciation summary
 import pandas as pd
@@ -42,7 +42,8 @@ model_counts_filtered = depr_summary_filtered.merge(model_counts.reset_index(), 
 ### CREATE COMBINATION PLOT ###
 
 # random generator
-selection = model_counts_filtered
+selection = model_counts_filtered  # fully random
+selection = model_counts_filtered[model_counts_filtered['Counts'] > 750] # many counts
 import numpy.random as npr
 model = selection.iloc[npr.randint(0,len(selection))][2]
 
@@ -54,8 +55,8 @@ plot_combo_depr2(listings_data_filtered,
                  model_counts, 
                  save=False)
 
-
-
+data = listings_data_filtered
+depr_summary = depr_summary_filtered
 
 
 

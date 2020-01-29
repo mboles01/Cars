@@ -157,9 +157,11 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     # textbox
     segment_average = np.nanmean(data_halflife)
     props = dict(facecolor='white', edgecolor='white', alpha=0.67)
-    line1 = '$Half$ $life$ $(years)$\n' + str(model) + ': %.2f\n' % user_choice['Half life'].iloc[0]
-    line2 = str(body) + ' average: %.2f' % segment_average                               
-    textbox = line1 + line2
+    line1 = '$Half$ $life$ $(years)$\n' 
+    line2 = str(model) + ': %.2f\n' % user_choice['Half life'].iloc[0]
+    line3 = str(body) + ' average: %.2f' % segment_average                               
+    textbox1 = line1 
+    textbox2 = line2 + line3
     
     binwidth = 0.5
     xmin = int(min(segment['Half life'])) - 1
@@ -168,7 +170,7 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     ylabel = 'Counts'
     
     bins = np.arange(round(min(data_halflife),1) - 0.5*binwidth, max(data_halflife) + binwidth - 0.5*binwidth, binwidth)
-    props = dict(facecolor='white', alpha=1.0)
+    props = dict(facecolor='white', alpha=0.67, edgecolor='none')
 
     ax2.hist(data_halflife, bins, edgecolor = 'black', facecolor = 'blue')
     
@@ -185,7 +187,15 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     for tick in ax2.get_yticklabels():
         tick.set_fontname('Helvetica')
         
-    ax2.text(0.95, 0.95, textbox, 
+    ax2.text(0.95, 0.95, textbox1, 
+            transform = ax2.transAxes, 
+            fontsize = 18, 
+            fontname = 'Helvetica', 
+            horizontalalignment = 'right',
+            verticalalignment = 'top', 
+            bbox = props)
+    
+    ax2.text(0.95, 0.85, textbox2, 
             transform = ax2.transAxes, 
             fontsize = 18, 
             fontname = 'Helvetica', 
@@ -229,7 +239,34 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
 
 
 
+    ### PRINT RECOMMENDATION ###
 
+    print('The %s %s loses half its value every %.2f years' % (make, model,user_choice_halflife))
+    
+    if user_choice_halflife > segment_average:
+        print('This compares favorably to the %s segment average of %.2f years' % (body, segment_average))
+        if user_choice_halflife == max(segment['Half life']):
+            print('Nice choice! This is the best option for value retention in the %s segment' % body)
+        elif user_choice_halflife != max(segment['Half life']):
+            print('Not bad! Here are the top 3 options among %ss: ' % body)
+            print('1. %s %s \n2. %s %s \n3. %s %s' % (
+                segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
+                segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
+                segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
+                segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][1], 
+                segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][0],
+                segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1])) 
+
+    elif user_choice_halflife < segment_average:
+        print('This is below the %s segment average of %.2f years' % (body, segment_average))
+        print('Not great! You may consider the top 3 options in the %s segment: ' % body)
+        print('1. %s %s \n2. %s %s \n3. %s %s' % (
+            segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
+            segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
+            segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
+            segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][1], 
+            segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][0],
+            segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1])) 
 
 
 
