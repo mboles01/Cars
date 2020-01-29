@@ -10,82 +10,175 @@ Created on Sun Jan 19 20:30:31 2020
 import os
 os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/scripts') 
 
-# open new and used listings "clean_1" dataframes
+# open listings dataframe
 import pandas as pd
-all_listings_clean2 = pd.read_csv('../data/clean/all_listings_clean_2.csv')
+listings = pd.read_csv('../data/listings4.csv')
+listings.columns
 
 
 
-# ### PLOT DEPRECIATION CURVES ###
+### ADDITIONAL CLEANING ###
 
-# # load plot function and listings data
-# from plotfunctions import plot_depr_age
-# data = all_listings_clean2
+# # drop duplicates
+# len(listings)
+# listings['VIN'].nunique()
+# listings2 = listings.drop_duplicates(subset='VIN')
+# listings2.to_csv('../data/listings2.csv', index=False)
 
-# # # collect top n models by count frequency
-# model_counts = all_listings_clean2.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
-# # selection = model_counts[:5]
+# # get mileage column to numeric integer with zeros instead of NaN
+# listings['Mileage'] = pd.to_numeric(listings['Mileage'], errors="coerce")
+# listings['Mileage'] = listings['Mileage'].fillna(0)
+# listings['Mileage'] = listings['Mileage'].astype(int)
+# listings.to_csv('../data/listings3.csv', index=False)
 
-###
+# print make/model table
+# listings['VIN'].nunique()
 
-# create depreciation tables across models
-from fit_functions_2 import fit_depr_2
-
-model_counts = all_listings_clean2.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
-selection = model_counts[:300]
-data = all_listings_clean2
-newerthan = 1995
-bounds_age = ((10000, 0.05), (200000, 1))
-bounds_miles = ((10000, 0), (200000, .003))
-
-# remove problematic listings
-selection = selection.drop(['Niro', 'e-Golf', 'M340i', 'Atlas', 'EcoSport', 'Supra', 'Clarity', 'Blazer', 'Mirage G4', 'Pickup'])
-
-fit_data = pd.DataFrame()
-emp_data = pd.DataFrame()
-pred_data = pd.DataFrame()
-for counter, line in enumerate(selection.index,1):
-    print(counter, line)
-    model = line
-    fit_data, emp_data, pred_data = fit_depr_2(data, model, newerthan, counter, 
-                                               fit_data, emp_data, pred_data, 
-                                               bounds_age, bounds_miles)    
-
-fit_data.to_csv('../data/depreciation/depreciation_all_models/fit_data_6.csv', index=False)
-emp_data.sort_values(by=['Age']).to_csv('../data/depreciation/depreciation_all_models/emp_data_6.csv', index=False)
-pred_data.to_csv('../data/depreciation/depreciation_all_models/pred_data_6.csv', index=False)
+# # change 'Minivan' to 'Van'
+# listings['Body'] = listings['Body'].replace({'Minivan':'Van'})
+# listings.to_csv('../data/listings4.csv', index=False)
 
 
 
 
 
 
-# plot age depreciation curves for selected models
-cars = selection
-fit_data_age = pd.DataFrame()
-for counter, line in enumerate(cars.index,1):
-    print(counter, line)
-    model = line
-    try:
-        fit_data_age = plot_depr_age(data, model, newerthan, counter, fit_data_age)
-    except Exception:
-        print('Exception')
-        continue
+
+### CREATE MAKE/MODEL TABLE ###
+
+# get unique columns
+make_model_list = listings.groupby(['Make','Model', 'Body']).size().reset_index().rename(columns={0:'Count'})
+make_model_list_sorted = make_model_list.sort_values(by = 'Count', ascending = False).replace('Sport Utility', 'SUV')
+make_model_list_sorted.to_csv('../data/make_model_list_sorted.csv', index=False)
+
+make_model_list_top = make_model_list_sorted[:500]
+
+# sort to plot most popular models first
+
+# # collect top n models by count frequency
+listings_sorted = listings.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
+
+# check top listings
+listings_sorted[:100]
+listings.iloc[0]['Mileage'].astype(int)
 
 
-###
 
-# plot miles depreciation curves for selected models
-from plotfunctions import plot_depr_miles
 
-cars = selection
-fit_data_miles = pd.DataFrame()
-for counter, line in enumerate(cars.index,1):
-    print(counter, line)
-    model = line    
-    try:
-        fit_data_miles = plot_depr_miles(data, model, newerthan, counter, fit_data_miles)
-    except Exception:
-        print('Exception')
-        continue
+
+
+### SCATTER PLOT: AGE VS. MILEAGE ###
+listings_filtered = listings[listings['Year'] > 2004]
+x_data = 2020 - listings_filtered['Year']
+y_data = listings_filtered['Mileage']
+x_lim = [0, 15]
+y_lim = [0, 200000]
+save = True
+
+from plotfunctions import plot_age_miles
+plot_age_miles(x_data, y_data, x_lim, y_lim, save)
+
+
+
+
+
+
+
+### HISTOGRAM PLOT: PRICE ###
+import numpy as np
+data = listings_filtered['Price']
+data_filtered = data[(data != np.inf) & (data != 0)]
+
+# textbox
+average = int(np.nanmean(data_filtered))
+median = int(np.nanmedian(data_filtered))
+stdev = int(np.std(data_filtered))   
+props = dict(facecolor='white', edgecolor='none', alpha=0.67)
+textbox = '$List$ $price$ \nAverage = %.0f \nMedian = %.0f \nStdev = %.0f' % (average, median, stdev)
+
+import numpy as np
+binwidth = 1000
+xmin = 0
+xmax = 80000
+ymin = 0
+ymax = 3500
+xlabel = 'Price'
+ylabel = 'Counts'
+figure_name = '../images/Price_hist.png'
+
+from plotfunctions import plot_hist
+plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
+
+
+
+
+
+
+
+
+### HISTOGRAM PLOT: MILES PER YEAR ###
+import numpy as np  
+data = listings_filtered['Mileage']/(2020 - listings_filtered['Year'])
+data_filtered = data[(data != np.inf) & (data != 0)]
+
+
+# textbox
+average = int(np.nanmean(data_filtered))
+median = int(np.nanmedian(data_filtered))
+stdev = int(np.std(data_filtered))   
+props = dict(facecolor='white', edgecolor='none', alpha=0.67)
+textbox = '$Miles$ $per$ $year$ \nAverage = %.0f \nMedian = %.0f \nStdev = %.0f' % (average, median, stdev)
+
+# plot params
+binwidth = 200
+xmin = 0
+xmax = 30000
+ymin = 0
+ymax = 1300
+xlabel = 'Miles per year'
+ylabel = 'Counts'
+figure_name = '../images/Miles_vs_age_hist.png'
+
+from plotfunctions import plot_hist
+plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
+
+
+
+
+
+
+
+### BAR PLOT: MOST COMMON CARS ###
+common_cars = make_model_list_top[:25]
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(1,1,figsize=(10,7))
+plt.bar(common_cars['Model'], common_cars['Count'], color='blue', edgecolor='black')
+plt.xticks(rotation=45, ha='right')
+plt.title('Most common cars', size=22)
+plt.xlabel('Model', size=18)
+plt.ylabel('Count', size=18)
+plt.tight_layout()
+plt.savefig('../images/Common_cars.png', dpi = 200)
+
+
+
+
+
+
+
+
+### BAR PLOT: MOST COMMON VEHICLE TYPE ###
+body_list = listings.groupby(['Body']).size().reset_index().rename(columns={0:'Count'})
+body_list = body_list.drop(body_list[body_list.Body == 'Unavailable '].index).sort_values('Count', ascending=False)
+
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(1,1,figsize=(7,7))
+plt.bar(body_list['Body'], body_list['Count'], color='blue', edgecolor='black')
+plt.xticks(rotation=45, ha='right')
+plt.title('Body types', size=22)
+plt.xlabel('Body type', size=18)
+plt.ylabel('Count', size=18)
+plt.tight_layout()
+plt.savefig('../images/Body_type.png', dpi = 600)
+
 

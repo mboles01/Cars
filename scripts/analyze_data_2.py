@@ -88,7 +88,7 @@ depr_top_n = depr_top_n.sort_values('Half life', ascending=False)
 ### CREATE COMBINATION PLOT ###
 
 # random generator
-selection = model_counts_filtered[:125]
+selection = model_counts_filtered[:100]
 import numpy.random as npr
 model = selection.iloc[npr.randint(0,len(selection))][2]
 
