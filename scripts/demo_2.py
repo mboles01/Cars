@@ -12,8 +12,8 @@ os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
 
 # open full listings data set and depreciation summary
 import pandas as pd
-listings_data = pd.read_csv('../data/listings4.csv')
-depr_summary = pd.read_csv('../data/depreciation/depreciation_by_model.csv')
+listings_data = pd.read_csv('../data/listings5.csv')
+depr_summary = pd.read_csv('../data/depreciation/depreciation_by_model_2.csv')
 
 
 
@@ -54,9 +54,6 @@ plot_combo_depr2(listings_data_filtered,
                  model, 
                  model_counts, 
                  save=False)
-
-data = listings_data_filtered
-depr_summary = depr_summary_filtered
 
 
 

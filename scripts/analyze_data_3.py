@@ -12,46 +12,51 @@ os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
 
 # open listings dataframe
 import pandas as pd
-listings = pd.read_csv('../data/listings4.csv')
+listings = pd.read_csv('../data/listings5.csv')
 listings.columns
 
 # get sorted data
 make_model_list_sorted = pd.read_csv('../data/make_model_list_sorted.csv')
 
 
+### clean data - drop problematic vintage listings ###
+
+listings = listings.drop(listings[(listings.Model == '328i') & (listings.Year < 2002)].index)
 
 
 
-
-# ## CREATE DEPRECIATION FITS ###
-
-# # create depreciation tables across models
-# from fit_functions_2 import fit_depr_2
-
-# # # collect top n models by count frequency
-# listings_sorted = listings.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
+listings_328 = listings[listings.Model == '328i']
 
 
-# # pull out selection
-# selection = listings_sorted[:300]
-# newerthan = 1995
-# bounds_age = ((10000, 0.01), (200000, 1))
-# bounds_miles = ((10000, 0), (200000, .003))
+## CREATE DEPRECIATION FITS ###
+
+# create depreciation tables across models
+from fit_functions_2 import fit_depr_2
+
+# # collect top n models by count frequency
+listings_sorted = listings.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
 
 
-# fit_data = pd.DataFrame()
-# emp_data = pd.DataFrame()
-# pred_data = pd.DataFrame()
-# for counter, line in enumerate(selection.index,1):
-#     model = line
-#     print(model)
-#     fit_data, emp_data, pred_data = fit_depr_2(listings, model, newerthan, counter, 
-#                                                 fit_data, emp_data, pred_data, 
-#                                                 bounds_age, bounds_miles)    
+# pull out selection
+selection = listings_sorted[:300]
+newerthan = 1995
+bounds_age = ((10000, 0.01), (200000, 1))
+bounds_miles = ((10000, 0), (200000, .003))
 
-# fit_data.to_csv('../data/depreciation/fit_data.csv', index=False)
-# emp_data.sort_values(by=['Age']).to_csv('../data/depreciation/emp_data.csv', index=False)
-# pred_data.to_csv('../data/depreciation/pred_data.csv', index=False)
+
+fit_data = pd.DataFrame()
+emp_data = pd.DataFrame()
+pred_data = pd.DataFrame()
+for counter, line in enumerate(selection.index,1):
+    model = line
+    print(model)
+    fit_data, emp_data, pred_data = fit_depr_2(listings, model, newerthan, counter, 
+                                                fit_data, emp_data, pred_data, 
+                                                bounds_age, bounds_miles)    
+
+fit_data.to_csv('../data/depreciation/fit_data_2.csv', index=False)
+emp_data.sort_values(by=['Age']).to_csv('../data/depreciation/emp_data_2.csv', index=False)
+pred_data.to_csv('../data/depreciation/pred_data_2.csv', index=False)
 
 
 
@@ -61,7 +66,7 @@ make_model_list_sorted = pd.read_csv('../data/make_model_list_sorted.csv')
 ### PLOT R2 FOR 3 CHOICES OF DEPRECIATION MODELING ###
 
 # import data, choose selection
-fit_data = pd.read_csv('../data/depreciation/fit_data.csv')
+fit_data = pd.read_csv('../data/depreciation/fit_data_2.csv')
 selection = fit_data[:10]
 selection.columns
 
@@ -74,21 +79,21 @@ plot_depr_R2(selection)
 
 
 
-# ### CREATE DEPRECIATION SUMMARY ###
+### CREATE DEPRECIATION SUMMARY ###
 
-# # get depreciation fit data and filter by fit quality (R2)
-# R2_min = 0
-# depr_sorted = fit_data[['Make', 'Model', 'Fit_age_a', 'Fit_age_b', 'Fit_age_R2']].sort_values('Fit_age_b').reset_index()
-# depr_sorted_filtered = depr_sorted[depr_sorted['Fit_age_R2'] > R2_min]
+# get depreciation fit data and filter by fit quality (R2)
+R2_min = 0
+depr_sorted = fit_data[['Make', 'Model', 'Fit_age_a', 'Fit_age_b', 'Fit_age_R2']].sort_values('Fit_age_b').reset_index()
+depr_sorted_filtered = depr_sorted[depr_sorted['Fit_age_R2'] > R2_min]
 
-# # add body data to depreciation
-# make_model = make_model_list_sorted[['Model','Body']]
-# make_model_clean = make_model_list_sorted.drop_duplicates(subset='Model', keep='first')
-# depr_with_body = depr_sorted_filtered.merge(make_model_clean[['Model','Body']], on='Model', how='left')
+# add body data to depreciation
+make_model = make_model_list_sorted[['Model','Body']]
+make_model_clean = make_model_list_sorted.drop_duplicates(subset='Model', keep='first')
+depr_with_body = depr_sorted_filtered.merge(make_model_clean[['Model','Body']], on='Model', how='left')
 
-# # add half life to table, save .csv
-# depr_with_body['Half life'] = 0.69315/depr_with_body['Fit_age_b']
-# depr_with_body.sort_values('Make').to_csv('../data/depreciation/depreciation_by_model.csv', index=False)
+# add half life to table, save .csv
+depr_with_body['Half life'] = 0.69315/depr_with_body['Fit_age_b']
+depr_with_body.sort_values('Make').to_csv('../data/depreciation/depreciation_by_model_2.csv', index=False)
 
 
 
