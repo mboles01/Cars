@@ -34,15 +34,6 @@ model_counts_filtered = depr_summary_filtered.merge(model_counts.reset_index(), 
 make_choices = model_counts_filtered['Make'].unique()
 
 
-makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
-
-
-
-
 ### DEFINE FUNCTIONS ###
 
 def make_dropdown(input_make):
@@ -53,11 +44,9 @@ def make_dropdown(input_make):
          'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
     
     models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
+    models.sort()
     dropdown_html = "<select id=\"make\" name=\"make\">\n"
     for i,make in enumerate(models):
-        # if i==selected:
-        #     dropdown_html += "<option selected value=\"{}\">{}</option>\n".format(i,make)
-        # else:
             dropdown_html += "<option value=\"{}\">{}</option>\n".format(i, make)
     dropdown_html += "</select>\n"
     return dropdown_html
@@ -87,9 +76,15 @@ def index():
 @app.route('/models')
 def get_models():
     # pull car make from user input dropdown
+    makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
+         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
     input_make = request.args.get('input_make')
+    make_name = makes[int(input_make)]
     dropdown_html = make_dropdown(input_make)
-    return render_template("models.html", input_make=input_make, dropdown_html=dropdown_html)
+    return render_template("models.html", input_make=input_make, dropdown_html=dropdown_html, make_name=make_name)
 
 
 
