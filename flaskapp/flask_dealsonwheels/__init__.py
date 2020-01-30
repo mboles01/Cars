@@ -11,4 +11,4 @@ from flask import Flask
 app = Flask(__name__)
 
 
-from flask_depreciator import views
+from flask_dealsonwheels import views

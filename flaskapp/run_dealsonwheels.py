@@ -8,5 +8,5 @@ Created on Thu Jan 23 13:04:20 2020
 
 
 #!/usr/bin/env python
-from flask_depreciator import app
+from flask_dealsonwheels import app
 app.run(debug = True)
