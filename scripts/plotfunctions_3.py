@@ -67,8 +67,11 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     import matplotlib.ticker as ticker
     
     # set up figure axis
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,6))
-
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15,6))
+    # fig.subplots_adjust(bottom=.75)
+    # ax1.set_position([0.1,0.5,0.1,1])
+    # ax2.set_position([0.1,0.5,0.1,1])
+    
     ax1.scatter(age_listprice['Age'], 
                age_listprice['List Price'], 
                edgecolor='black', facecolor='blue', alpha=0.33)
@@ -231,45 +234,75 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     plt.rcParams['axes.unicode_minus'] = False
     plt.grid(); ax2.grid(color=(.9, .9, .9)); ax2.set_axisbelow(True)
     plt.subplots_adjust(wspace = 0.25)
-    plt.show()
-
-
-
-
-
-
+    
+    # plt.gcf().subplots_adjust(bottom=0.30)
+    
 
     ### PRINT RECOMMENDATION ###
 
-    print('The %s %s loses half its value every %.2f years' % (make, model,user_choice_halflife))
+    textbox3 = 'The %s %s loses half its value every %.2f years' % (make, model,user_choice_halflife)
     
     if user_choice_halflife > segment_average:
-        print('This compares favorably to the %s segment average of %.2f years' % (body, segment_average))
+        textbox4 = 'This compares favorably to the %s segment average of %.2f years' % (body, segment_average)
         if user_choice_halflife == max(segment['Half life']):
-            print('Nice choice! This is the best option for value retention in the %s segment' % body)
+             textbox5 = 'Nice choice! This is the best option for value retention in the %s segment' % body
         elif user_choice_halflife != max(segment['Half life']):
-            print('Not bad! Here are the top 3 options among %ss: ' % body)
-            print('1. %s %s \n2. %s %s \n3. %s %s' % (
+            textbox5 = 'Not bad! Here are the top 3 options among %ss: \n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
                 segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
                 segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][1], 
                 segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][0],
-                segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1])) 
+                segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1]) 
 
     elif user_choice_halflife < segment_average:
-        print('This is below the %s segment average of %.2f years' % (body, segment_average))
-        print('Not great! You may consider the top 3 options in the %s segment: ' % body)
-        print('1. %s %s \n2. %s %s \n3. %s %s' % (
+        textbox4 = 'This is below the %s segment average of %.2f years' % (body, segment_average)
+        textbox5 = 'Not great! You may consider the top 3 options in the %s segment: \n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
             segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
             segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
             segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
             segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][1], 
             segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][0],
-            segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1])) 
+            segment.sort_values('Half life', ascending=False).iloc[2][['Make', 'Model']][1]) 
 
 
+    ax1.text(-1.33, -.25, textbox3, 
+            transform = ax2.transAxes, 
+            fontsize = 24,
+            weight = 'bold',
+            fontname = 'Helvetica', 
+            horizontalalignment = 'left',
+            verticalalignment = 'top', 
+            bbox = props)
+    
+    ax1.text(-1.33, -.40, textbox4, 
+            transform = ax2.transAxes, 
+            fontsize = 24,
+            fontweight = 'bold',
+            fontname = 'Helvetica', 
+            horizontalalignment = 'left',
+            verticalalignment = 'top', 
+            bbox = props)
+    
+    ax1.text(-1.33, -.55, textbox5, 
+            transform = ax2.transAxes, 
+            fontsize = 24,
+            weight = 'bold',
+            fontname = 'Helvetica', 
+            horizontalalignment = 'left',
+            verticalalignment = 'top', 
+            bbox = props)
+    
+    # fig.tight_layout()
+    
+    # save figure
+    if save == True:
+        figure_name = '../images/depr_by_model_2/' + str(model) + '.png'
+        plt.savefig(figure_name, dpi = 600, bbox_inches='tight')
+    else:
+        pass    
 
+    plt.show()
 
 
 

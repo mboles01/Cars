@@ -72,12 +72,50 @@ listings_dummies.to_csv('../data/valuation/listings_dummies.csv', index=False, c
 # import data
 import pandas as pd
 listings_dummies = pd.read_csv('../data/valuation/listings_dummies.csv', compression='gzip')
-listings_dummies_short = listings_dummies[:1000]
+listings_dummies_short = listings_dummies #[:10000]
 columns = listings_dummies_short.columns
 
 # set features (independent) and labels (dependent)
 X = listings_dummies_short.drop(columns='Price')
 y = listings_dummies_short['Price']
+
+
+
+
+### STATSMODELS ###
+
+# split into training and test sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+# fit data - Statsmodels
+import statsmodels.api as sm
+model = sm.OLS(y_train, X_train)
+
+# get training set summary
+results_train = model.fit()
+summary_train = results_train.summary()
+summary_train_text = summary_train.as_text()
+pvalues_train = results_train.pvalues
+
+# predict test set
+y_pred = results_train.predict(X_test)
+
+
+summary_test = results_test
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ### SCIKIT-LEARN ###
@@ -108,42 +146,12 @@ y = listings_dummies_short['Price']
 # X_new = rfecv.transform(X)
 
 
-### STATSMODELS ###
-
-# split into training and test sets
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-
-# fit data - Statsmodels
-import statsmodels.api as sm
-model = sm.OLS(y_train, X_train)
-
-# get training set summary
-results_train = model.fit()
-summary_train = results_train.summary()
-summary_train_text = summary_train.as_text()
-pvalues_train = results_train.pvalues
-
-# predict test set
-y_pred = model.predict(X_test)
-
-results_test = sm.regression.linear_model.OLSResults(model, X_test)
-summary_test = results_test
-
-
-
-
-
-
-
 
 # fit data
 from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
 regressor.fit(x, y)
 regressor.intercept_, regressor.coef_
-
 
 
 

@@ -1,12 +1,13 @@
+
+# specify path
+import os
+os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/flaskapp')
+
 # Create my flask app
 from flask import render_template
 from flask import request
 from flask_dealsonwheels import app
 import pandas as pd
-
-# import os
-# os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
-# from plotfunctions_3 import plot_combo_depr2
 
 
 ### READ IN DATA ###
@@ -48,29 +49,24 @@ def make_dropdown(input_make):
     
     models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
     models.sort()
-    
-    dropdown_html = "<select id=\"make\" name=\"make\">\n"
-    for i,make in enumerate(models):
-            dropdown_html += "<option value=\"{}\">{}</option>\n".format(i, make)
+  
+    dropdown_html = "<select id=\"input_model\" name=\"input_model\">\n"
+    for i, model in enumerate(models):
+            dropdown_html += "<option value=\"{}\">{}</option>\n".format(i, model)
     dropdown_html += "</select>\n"
     return dropdown_html
 
 
-def plot_depreciation(input_model):
-    from plotfunctions_3 import plot_combo_depr2
-    plot_combo_depr2(listings_data_filtered, 
-                     depr_summary_filtered, 
-                     input_model, 
-                     model_counts, 
-                     save=False)
+# def models(input_make):
+#     makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
+#      'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+#      'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+#      'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+#      'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+#     models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
+#     models.sort()
+#     return models
 
-def plot_stuff(input_model):
-    from plotfunctions_3 import plot_combo_depr2
-    plot_combo_depr2(listings_data_filtered, 
-                    depr_summary_filtered, 
-                    input_model, 
-                    model_counts, 
-                    save=False)
 
 ### DEFINE FLASK FUNCTIONS ###
 
@@ -99,27 +95,16 @@ def get_models():
 
 @app.route('/output')
 def output():
-    
-    import sys
-    sys.path.insert(1, './Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
-    
     #pull 'input_model' from input field and store it
-    model = request.args.get('input_model')
-    plot_stuff(input_model=model)
-    
-    # import os
-    # os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
-    # from plotfunctions_3 import plot_combo_depr2
-    # plot_combo_depr2(listings_data_filtered, 
-    #                depr_summary_filtered, 
-    #                model, 
-    #                model_counts, 
-    #                save=False)
-    return render_template("output.html", model=model)
+    # input_make = request.args.get('input_make')
+    input_model = request.args.get('input_model')
+    # models_list = models[int(input_make)]
+    # model_name = models_list[int(input_model)]
+    return render_template("output.html", input_model=input_model)
 
 
 
-
+make_model_list[make_model_list['Make'] == 'Ford']
 
 
 

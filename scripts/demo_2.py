@@ -43,17 +43,21 @@ model_counts_filtered = depr_summary_filtered.merge(model_counts.reset_index(), 
 
 # random generator
 selection = model_counts_filtered  # fully random
-selection = model_counts_filtered[model_counts_filtered['Counts'] > 750] # many counts
+# selection = model_counts_filtered[model_counts_filtered['Counts'] > 750] # many counts
 import numpy.random as npr
 model = selection.iloc[npr.randint(0,len(selection))][2]
+model = 'Accord'
 
 # plot 
 from plotfunctions_3 import plot_combo_depr2
-plot_combo_depr2(listings_data_filtered, 
-                 depr_summary_filtered, 
-                 model, 
-                 model_counts, 
-                 save=False)
 
-
+for line in model_counts_filtered.iterrows():
+    model = line[1][2]
+    print(model)
+    
+    plot_combo_depr2(listings_data_filtered, 
+                     depr_summary_filtered, 
+                     model, 
+                     model_counts, 
+                     save=True)
 

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>LocalType</title>
+    <title>Deals On Wheels</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -18,7 +18,7 @@
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">LocalType</a>
+    <a class="navbar-brand" href="#">Deals On Wheels</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
             aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -26,7 +26,7 @@
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/about">About</a>
@@ -36,55 +36,32 @@
 </nav>
 <main role="main" class="container">
     <div class="starter-template">
-        <h1>Deals On Wheels</h1>
-        <h6>Let the market show you how to buy a better car</h6>
+    <div class="row justify-content-around">
+        <div class="col-lg-6">
+            
+            <img src={{url_for('static', filename='Accord.png')}} alt="Depreciation curve" width="900" height="650" align="left">
+
+                </table>
+            </div>
+        </div>
+        </div>
     </div>
+
     <form action="/output" method="GET">
         <div class="row justify-content-center">
             <div class="col-lg-5">
                 <div class="form-group">
-                    <label for="input_text"><h2>Insert plot below</h2></label><br>
-                    <textarea style="width:350px;height:200px;" id="input_text" name='input_text'
-                              placeholder=Text>{{input_text}}</textarea>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="form-group">
-                    <label for="input_city"><h2>Choose a location</h2></label><br>
-                    {{dropdown_html|safe}}
+      <!--              <label for="input_text"><h6>Depreciation plot for {{input_model}}</h6></label><br>  -->
                 </div>
             </div>
             <div class="col-lg-2 align-self-center">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg">Analyze!</button>
+                    <button type="submit" class="btn btn-secondary btn-lg">Random</button>
                 </div>
             </div>
         </div>
     </form>
 
-    <div class="row justify-content-around">
-        <div class="col-lg-6">
-            <h2>Overall Score: {{score|safe}}</h2>
-            <h3>Text Review</h3>
-            <div style="word-wrap:break-word; width:340px">
-                {{color_text|safe}}
-            </div>
-            <h3>Suggested Synonyms</h3>
-            <div style="word-wrap:break-word; width:340px">
-                <table class='table table-hover'>
-                    {{synonyms|safe}}
-                </table>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <h2>Influential Words</h2>
-            {{top_words|safe}}
-        </div>
-        <div class="col-lg-3">
-            <h2>Top Matching Cities</h2>
-            {{top_cities|safe}}
-        </div>
-    </div>
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
