@@ -33,10 +33,29 @@ model_counts = listings_data.groupby('Model').count().iloc[:,1].to_frame().renam
 
 # view all make/model combinations with minimum R2 fit quality
 model_counts_filtered = depr_summary_filtered.merge(model_counts.reset_index(), on='Model', how='left')
+model_counts_filtered.to_csv('../data/model_counts_filtered.csv', index=False)
 
 
+# check frequency of each body style
+listings_data_filtered['Body'].value_counts()
+
+# consolidate lower-frequency body styles into bigger bin
+# listings_data_filtered.loc[(listings_data_filtered['Body'] == 'Convertible'),'Body'] = 'Coupe'
+# listings_data_filtered.loc[(listings_data_filtered['Body'] == 'Hatchback'),'Body'] = 'Coupe'
+# listings_data_filtered.loc[(listings_data_filtered['Body'] == 'Wagon'),'Body'] = 'Sedan'
+
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Convertible'),'Body'] = 'Coupe'
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Hatchback'),'Body'] = 'Coupe'
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Wagon'),'Body'] = 'Sedan'
+
+# change some things
+# listings_data_filtered.loc[(listings_data_filtered['Model'] == 'Wrangler'),'Body'] = 'SUV'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Wrangler'),'Body'] = 'SUV'
 
 
+# # save .csv of filtered data
+# listings_data_filtered.to_csv('../data/listings5_filtered.csv', index=False)
+# depr_summary_filtered.to_csv('../data/depr_summary_filtered.csv', index=False)
 
 
 ### CREATE COMBINATION PLOT ###
@@ -46,18 +65,18 @@ selection = model_counts_filtered  # fully random
 # selection = model_counts_filtered[model_counts_filtered['Counts'] > 750] # many counts
 import numpy.random as npr
 model = selection.iloc[npr.randint(0,len(selection))][2]
-model = 'Accord'
+# model = 'Accord'
 
 # plot 
-from plotfunctions_3 import plot_combo_depr2
+from plotfunctions_4 import plot_combo_depr2
 
 for line in model_counts_filtered.iterrows():
     model = line[1][2]
     print(model)
     
     plot_combo_depr2(listings_data_filtered, 
-                     depr_summary_filtered, 
-                     model, 
-                     model_counts, 
-                     save=True)
+                         depr_summary_filtered, 
+                         model, 
+                         model_counts, 
+                         save=True)
 

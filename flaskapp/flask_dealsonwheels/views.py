@@ -17,6 +17,7 @@ import pandas as pd
 listings_data = pd.read_csv('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/data/listings5.csv')
 depr_summary = pd.read_csv('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/data/depreciation/depreciation_by_model_2.csv')
 make_model_list = pd.read_csv('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/data/make_model_list_sorted.csv')
+model_counts_filtered = pd.read_csv('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/data/model_counts_filtered.csv')
 
 ### PRE-PROCESS DATA ###
 
@@ -42,19 +43,25 @@ make_choices = model_counts_filtered['Make'].unique()
 
 def make_dropdown(input_make):
     makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+             'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+             'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+             'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+             'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
     
     models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
     models.sort()
   
+    make_name = makes[int(input_make)]
+    
     dropdown_html = "<select id=\"input_model\" name=\"input_model\">\n"
     for i, model in enumerate(models):
             dropdown_html += "<option value=\"{}\">{}</option>\n".format(i, model)
     dropdown_html += "</select>\n"
-    return dropdown_html
+    return dropdown_html, make_name
+
+# def get_model_name(input_make, input_model):
+#     model_name = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()[int(input_model)]
+#     return model_name
 
 
 # def models(input_make):
@@ -83,21 +90,21 @@ def index():
 def get_models():
     # pull car make from user input dropdown
     makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+             'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+             'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+             'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+             'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
     input_make = request.args.get('input_make')
     make_name = makes[int(input_make)]
-    dropdown_html = make_dropdown(input_make)
+    (dropdown_html, make_name) = make_dropdown(input_make)
     return render_template("models.html", input_make=input_make, dropdown_html=dropdown_html, make_name=make_name)
 
 
 @app.route('/output')
 def output():
     #pull 'input_model' from input field and store it
-    # input_make = request.args.get('input_make')
     input_model = request.args.get('input_model')
+    # model_name = get_model_name(input_make, input_model)
     # models_list = models[int(input_make)]
     # model_name = models_list[int(input_model)]
     return render_template("output.html", input_model=input_model)
