@@ -248,7 +248,7 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
         textbox4 = r'This compares favorably to the $%s$ segment average of' % body
         textbox4_right = '%.2f years' % segment_average
         if user_choice_halflife == max(segment['Half life']):
-             textbox5 = 'Nice choice! This is the best option for value retention in the %s segment:\n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
+             textbox5 = 'Nice choice! This is the best option for value retention among %ss:\n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
                 segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
@@ -260,7 +260,7 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
                 segment.sort_values('Half life', ascending=False).iloc[1][['Half life']][0],
                 segment.sort_values('Half life', ascending=False).iloc[2][['Half life']][0])
         elif user_choice_halflife != max(segment['Half life']):
-            textbox5 = 'Not bad! Here are the top 3 options among %ss: \n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
+            textbox5 = 'Not bad! Here are the top 3 options among %ss:\n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
                 segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
                 segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],
@@ -276,7 +276,7 @@ def plot_combo_depr2(data, depr_summary, model, model_counts, save):
     elif user_choice_halflife < segment_average:
         textbox4 = 'This is below the $%s$ segment average of' % body
         textbox4_right = '%.2f years' % segment_average
-        textbox5 = 'Not great! You may consider the top 3 options in the %s segment: \n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
+        textbox5 = 'Not great! You may consider the top 3 options among %ss:\n' % body + '1. %s %s \n2. %s %s \n3. %s %s' % (
             segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][0],
             segment.sort_values('Half life', ascending=False).iloc[0][['Make', 'Model']][1], 
             segment.sort_values('Half life', ascending=False).iloc[1][['Make', 'Model']][0],

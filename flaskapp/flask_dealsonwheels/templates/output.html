@@ -34,12 +34,25 @@
         </ul>
     </div>
 </nav>
+
 <main role="main" class="container">
+
     <div class="starter-template">
-    <div class="row justify-content-around">
+        <div class="row">
+            <div class="child inline-block-child">
+                <form action="/random">
+                    <button type="submit" class="btn btn-secondary btn-lg">Random</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="starter-template">
+        <div class="row">
         <div class="col-lg-6">
             
-            <img src={{url_for('static', filename='Accord.png')}} alt="Depreciation curve" width="900" height="650" align="left">
+            <img src={{url_for('static', filename=input_model_filename)}} alt="Depreciation curve" width="900" height="650" align="left">
 
                 </table>
             </div>
@@ -52,11 +65,6 @@
             <div class="col-lg-5">
                 <div class="form-group">
       <!--              <label for="input_text"><h6>Depreciation plot for {{input_model}}</h6></label><br>  -->
-                </div>
-            </div>
-            <div class="col-lg-2 align-self-center">
-                <div class="form-group">
-                    <button type="submit" class="btn btn-secondary btn-lg">Random</button>
                 </div>
             </div>
         </div>

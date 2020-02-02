@@ -8,6 +8,7 @@ from flask import render_template
 from flask import request
 from flask_dealsonwheels import app
 import pandas as pd
+import numpy as np  
 
 
 ### READ IN DATA ###
@@ -39,6 +40,9 @@ model_counts_filtered = depr_summary_filtered.merge(model_counts.reset_index(), 
 make_choices = model_counts_filtered['Make'].unique()
 
 
+# create global input_make
+global_input_make = None
+
 ### DEFINE FUNCTIONS ###
 
 def make_dropdown(input_make):
@@ -47,10 +51,10 @@ def make_dropdown(input_make):
              'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
              'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
              'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+
+    # models = np.unique(make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist())   
+    models = np.unique(model_counts_filtered[model_counts_filtered['Make'] == makes[int(input_make)]]['Model'].tolist())   
     
-    models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
-    models.sort()
-  
     make_name = makes[int(input_make)]
     
     dropdown_html = "<select id=\"input_model\" name=\"input_model\">\n"
@@ -95,23 +99,42 @@ def get_models():
              'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
              'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
     input_make = request.args.get('input_make')
+    global global_input_make 
+    global_input_make = input_make
     make_name = makes[int(input_make)]
     (dropdown_html, make_name) = make_dropdown(input_make)
+    # global_input_make = None
     return render_template("models.html", input_make=input_make, dropdown_html=dropdown_html, make_name=make_name)
 
 
 @app.route('/output')
 def output():
-    #pull 'input_model' from input field and store it
+    makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
+         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+    
+    # pull 'input_model' from input field and store it
     input_model = request.args.get('input_model')
+    # input_make = request.args.get('input_make')
+    input_model_name = model_counts_filtered[model_counts_filtered['Make'] == makes[int(global_input_make)]]['Model'].iloc[int(input_model)]
+    input_model_filename = str(input_model_name) + '.png'
+    
+    return render_template("output.html", input_model=input_model, input_model_filename=input_model_filename)
+
+
+@app.route('/random')
+def random():
+    # generate random entry
+    import numpy.random as npr
+    selected = model_counts_filtered.sort_values('Counts', ascending=False)[:50]
+    random_model = selected.iloc[npr.randint(0,len(selected))][2]
+    random_model_filename = str(random_model) + '.png'
     # model_name = get_model_name(input_make, input_model)
     # models_list = models[int(input_make)]
     # model_name = models_list[int(input_model)]
-    return render_template("output.html", input_model=input_model)
-
-
-
-make_model_list[make_model_list['Make'] == 'Ford']
+    return render_template("random.html", random_model_filename=random_model_filename)
 
 
 

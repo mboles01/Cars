@@ -38,6 +38,8 @@ model_counts_filtered.to_csv('../data/model_counts_filtered.csv', index=False)
 
 # check frequency of each body style
 listings_data_filtered['Body'].value_counts()
+depr_summary_filtered['Body'].value_counts()
+
 
 # consolidate lower-frequency body styles into bigger bin
 # listings_data_filtered.loc[(listings_data_filtered['Body'] == 'Convertible'),'Body'] = 'Coupe'
@@ -48,10 +50,28 @@ depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Convertible'),'Body
 depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Hatchback'),'Body'] = 'Coupe'
 depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Wagon'),'Body'] = 'Sedan'
 
+# change to lowercase body style names
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Sedan'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Coupe'),'Body'] = 'coupe'
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Truck'),'Body'] = 'truck'
+depr_summary_filtered.loc[(depr_summary_filtered['Body'] == 'Van'),'Body'] = 'van'
+
+
 # change some things
 # listings_data_filtered.loc[(listings_data_filtered['Model'] == 'Wrangler'),'Body'] = 'SUV'
 depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Wrangler'),'Body'] = 'SUV'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Prius'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'A7'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'e-Golf'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Golf'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'GTI'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Panamera'),'Body'] = 'sedan'
+depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'C63 AMG'),'Body'] = 'coupe'
 
+depr_summary_filtered = depr_summary_filtered.drop(depr_summary_filtered[depr_summary_filtered.Model == 'CT 200h'].index)
+listings_data_filtered = listings_data_filtered.drop(listings_data_filtered[listings_data_filtered.Model == 'CT 200h'].index)
+model_counts_filtered = model_counts_filtered.drop(model_counts_filtered[model_counts_filtered.Model == 'CT 200h'].index)
+model_counts_filtered[105:110]
 
 # # save .csv of filtered data
 # listings_data_filtered.to_csv('../data/listings5_filtered.csv', index=False)
@@ -63,14 +83,13 @@ depr_summary_filtered.loc[(depr_summary_filtered['Model'] == 'Wrangler'),'Body']
 # random generator
 selection = model_counts_filtered  # fully random
 # selection = model_counts_filtered[model_counts_filtered['Counts'] > 750] # many counts
-import numpy.random as npr
-model = selection.iloc[npr.randint(0,len(selection))][2]
+# import numpy.random as np
 # model = 'Accord'
 
 # plot 
 from plotfunctions_4 import plot_combo_depr2
-
-for line in model_counts_filtered.iterrows():
+for line in model_counts_filtered[105:].iterrows():
+    
     model = line[1][2]
     print(model)
     
