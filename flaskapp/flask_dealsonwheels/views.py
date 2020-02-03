@@ -42,19 +42,21 @@ make_choices = model_counts_filtered['Make'].unique()
 
 # create global input_make
 global_input_make = None
+global makes
+makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
+         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
+         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
+         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
+         'Porsche', 'smart', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo']
+
+
 
 ### DEFINE FUNCTIONS ###
 
 def make_dropdown(input_make):
-    makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-             'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-             'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-             'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-             'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
-
-    # models = np.unique(make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist())   
+    # global makes
     models = np.unique(model_counts_filtered[model_counts_filtered['Make'] == makes[int(input_make)]]['Model'].tolist())   
-    
+    models.sort()
     make_name = makes[int(input_make)]
     
     dropdown_html = "<select id=\"input_model\" name=\"input_model\">\n"
@@ -63,20 +65,6 @@ def make_dropdown(input_make):
     dropdown_html += "</select>\n"
     return dropdown_html, make_name
 
-# def get_model_name(input_make, input_model):
-#     model_name = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()[int(input_model)]
-#     return model_name
-
-
-# def models(input_make):
-#     makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-#      'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-#      'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-#      'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-#      'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
-#     models = make_model_list_filtered[make_model_list_filtered['Make'] == makes[int(input_make)]]['Model'].tolist()   
-#     models.sort()
-#     return models
 
 
 ### DEFINE FLASK FUNCTIONS ###
@@ -90,38 +78,33 @@ def index():
 
 
 
-@app.route('/models')
+@app.route('/models') #, methods = ['GET', 'POST'])           # trying to avoid global variable
 def get_models():
-    # pull car make from user input dropdown
-    makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-             'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-             'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-             'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-             'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
+    global makes
     input_make = request.args.get('input_make')
     global global_input_make 
     global_input_make = input_make
     make_name = makes[int(input_make)]
     (dropdown_html, make_name) = make_dropdown(input_make)
     # global_input_make = None
+    # if request.method == 'POST':                            # trying to avoid global variable
+    #     input_make = request.form.get('input_make')
+    #     return redirect(url_for('output', input_make=input_make))
     return render_template("models.html", input_make=input_make, dropdown_html=dropdown_html, make_name=make_name)
+
 
 
 @app.route('/output')
 def output():
-    makes = ['Acura', 'Audi', 'BMW', 'Buick', 'Cadillac', 'Chevrolet',
-         'Chrysler', 'Dodge', 'Ford', 'GMC', 'Honda', 'Hyundai', 'INFINITI',
-         'Jaguar', 'Jeep', 'Kia', 'Land Rover', 'Lexus', 'Lincoln', 'MAZDA',
-         'MINI', 'Maserati', 'Mercedes-Benz', 'Mitsubishi', 'Nissan',
-         'Porsche', 'Subaru', 'Toyota', 'Volkswagen', 'Volvo', 'smart']
-    
+    global makes
     # pull 'input_model' from input field and store it
     input_model = request.args.get('input_model')
-    # input_make = request.args.get('input_make')
-    input_model_name = model_counts_filtered[model_counts_filtered['Make'] == makes[int(global_input_make)]]['Model'].iloc[int(input_model)]
+    # input_make = request.args.get('input_make', None)       # trying to avoid global variable
+    input_model_name = model_counts_filtered[model_counts_filtered['Make'] == makes[int(global_input_make)]]['Model'].sort_values().iloc[int(input_model)]
     input_model_filename = str(input_model_name) + '.png'
     
     return render_template("output.html", input_model=input_model, input_model_filename=input_model_filename)
+
 
 
 @app.route('/random')
@@ -138,36 +121,8 @@ def random():
 
 
 
-
-
-
-
-
 @app.route('/about')
 def about():
     return render_template("about.html")
 
 
-    
-
-
-
-
-
-
-
-
-# @app.route('/output')
-# def output():
-#   #pull 'birth_month' from input field and store it
-#   patient = request.args.get('birth_month')
-#     #just select the Cesareans  from the birth dtabase for the month that the user inputs
-#   query = "SELECT index, attendant, birth_month FROM birth_data_table WHERE delivery_method='Cesarean' AND birth_month='%s'" % patient
-#   print(query)
-#   query_results=pd.read_sql_query(query,con)
-#   print(query_results)
-#   births = []
-#   for i in range(0,query_results.shape[0]):
-#       births.append(dict(index=query_results.iloc[i]['index'], attendant=query_results.iloc[i]['attendant'], birth_month=query_results.iloc[i]['birth_month']))
-#       the_result = ModelIt(patient,births)
-#       return render_template("output.html", model=model)

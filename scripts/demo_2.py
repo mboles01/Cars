@@ -16,9 +16,6 @@ listings_data = pd.read_csv('../data/listings5.csv')
 depr_summary = pd.read_csv('../data/depreciation/depreciation_by_model_2.csv')
 
 
-
-
-
 ### PRE-PROCESS DATA ###
 
 # exclude models older than 
