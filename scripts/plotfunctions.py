@@ -399,29 +399,29 @@ def plot_depr_R2(selection):
     import matplotlib.pyplot as plt
     
     # set up plot
-    fig, ax = plt.subplots(1, 1, figsize=(7,7))
+    fig, ax = plt.subplots(1, 1, figsize=(6,6))
     plt.xlabel('Model', fontsize = 18, fontname = 'Helvetica')
     plt.ylabel('Fit quality ($R^2$)', fontsize = 18, fontname = 'Helvetica')
-    plt.ylim(0,1.19)
+    plt.ylim(0,1.15)
     
     # set width of bar
-    barWidth = 0.25
+    barWidth = 0.35
      
     # set height of bar
     
     bars_age = abs(selection['Fit_age_R2'])
     bars_miles = abs(selection['Fit_miles_R2'])
-    bars_cw = abs(selection['Fit_age_cw_R2'])
+    # bars_cw = abs(selection['Fit_age_cw_R2'])
     
     # Set position of bar on x-axis
     r1 = np.arange(len(bars_age))
-    r2 = [x + barWidth for x in r1]
-    r3 = [x + barWidth for x in r2]
+    r2 = [x + barWidth/2 for x in r1]
+    r3 = [x + barWidth/1.25 for x in r2]
      
     # Make the plot
-    plt.bar(r1, bars_age, color='blue', width=barWidth, edgecolor='white', label='Age')
-    plt.bar(r2, bars_miles, color='green', width=barWidth, edgecolor='white', label='Miles')
-    plt.bar(r3, bars_cw, color='#ff4c00', width=barWidth, edgecolor='white', label='24%, 15%')
+    plt.bar(r2, bars_age, color='blue', width=barWidth, edgecolor='white', label='Price ~ Age', zorder = 2)
+    plt.bar(r3, bars_miles, color='#ff4c00', width=barWidth, edgecolor='white', label='Price ~ Miles')
+    # plt.bar(r3, bars_cw, color='#ff4c00', width=barWidth, edgecolor='white', label='24%, 15%')
      
     # Add xticks on the middle of the group bars
     plt.xticks([r + barWidth for r in range(len(bars_age))], 
@@ -430,12 +430,12 @@ def plot_depr_R2(selection):
                ha='right')
     
     # adjust tick label size
-    ax.tick_params(axis = 'x', labelsize = 14)
-    ax.tick_params(axis = 'y', labelsize = 14)
+    ax.tick_params(axis = 'x', labelsize = 18)
+    ax.tick_params(axis = 'y', labelsize = 18)
      
     # Create legend & Show graphic
-    plt.legend(prop={'size':18})
-    plt.title('Modeling depreciation', fontsize = 20, fontname = 'Helvetica')
+    plt.legend(prop={'size':15})
+    # plt.title('Modeling depreciation', fontsize = 20, fontname = 'Helvetica')
     plt.tight_layout()
     plt.savefig('../images/R2_vs_model', dpi = 600)
     plt.show()

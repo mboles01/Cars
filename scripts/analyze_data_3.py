@@ -10,22 +10,14 @@ Created on Sun Jan 19 20:30:31 2020
 import os
 os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts') 
 
-# open listings dataframe
+# open full listings data set and depreciation summary
 import pandas as pd
-listings = pd.read_csv('../data/listings5.csv')
-listings.columns
+listings_data = pd.read_csv('../data/listings5_filtered.csv')
+depr_summary = pd.read_csv('../data/depr_summary_filtered.csv')
 
 # get sorted data
 make_model_list_sorted = pd.read_csv('../data/make_model_list_sorted.csv')
 
-
-### clean data - drop problematic vintage listings ###
-
-listings = listings.drop(listings[(listings.Model == '328i') & (listings.Year < 2002)].index)
-
-
-
-listings_328 = listings[listings.Model == '328i']
 
 
 ## CREATE DEPRECIATION FITS ###
@@ -67,13 +59,14 @@ pred_data.to_csv('../data/depreciation/pred_data_2.csv', index=False)
 
 # import data, choose selection
 fit_data = pd.read_csv('../data/depreciation/fit_data_2.csv')
-selection = fit_data[:10]
+selection = fit_data[fit_data['Model'].isin(['Mustang', 'Camaro', 'Challenger']) ]
 selection.columns
 
 # plot it
 from plotfunctions import plot_depr_R2
 plot_depr_R2(selection)
 
+# plot vintage appeal cars
 
 
 

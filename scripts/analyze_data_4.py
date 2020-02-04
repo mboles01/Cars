@@ -34,7 +34,7 @@ xmax = 11
 ymin = 0
 ymax = 35
 xlabel = 'Half life (years)'
-ylabel = 'Counts'
+ylabel = 'Counts (number of car models)'
 figure_name = '../images/Depreciation_hist.png'
 
 from plotfunctions import plot_hist
@@ -107,28 +107,38 @@ plt.savefig(figure_name, dpi = 150)
 # Determine order
 depr_order_brand = depr_summary.groupby('Body').median().sort_values(by='Half life',ascending=True)
 
+
 # create seaborn box + strip plot
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots(1, 1, figsize = (20,20))
+fig, ax = plt.subplots(1, 1, figsize = (14,14))
 
-ax = sns.boxplot(x = depr_order_brand.index, y = depr_order_brand['Half life'], data = depr_order_brand, 
-                 showfliers = False, order = list(depr_order_brand.index), linewidth = 5)
-ax = sns.stripplot(x = depr_order_brand.index, y = depr_order_brand['Half life'], data = depr_order_brand,
-                 order = list(depr_order_brand.index), jitter = 0.25, size = 15,
-                 linewidth = 3, edgecolor = 'black', alpha = 0.5)
+ax = sns.boxplot(x = 'Body', 
+                 y = 'Half life', 
+                 data = depr_summary,
+                 showfliers = False, 
+                 order = list(depr_order_brand.index), 
+                 linewidth = 5)
+
+ax = sns.stripplot(x = 'Body', 
+                   y = 'Half life', 
+                   data = depr_summary,
+                   order = list(depr_order_brand.index), 
+                   jitter = 0.25, size = 15,
+                   linewidth = 3, edgecolor = 'black', alpha = 0.5)
 
 # set axis properties
-plt.xticks(rotation=45, fontname = 'Helvetica', fontsize = 42, ha = 'right')
+plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'),
+    rotation=45, fontname = 'Helvetica', fontsize = 42, ha = 'right')
 plt.yticks(fontname = 'Helvetica', fontsize = 42)
-
+# plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'))
 
 plt.xlabel('Body type', fontsize = 55, fontname = 'Arial', fontweight = 'bold')
 plt.ylabel('Half life (years)', fontsize = 55, fontname = 'Arial', 
            fontweight = 'bold')
 
-ax.set_ylim(2, 8); ax.yaxis.labelpad = 25
+ax.set_ylim(0, 10); ax.yaxis.labelpad = 25
 ax.xaxis.set_tick_params(width = 3, length = 15)
 ax.yaxis.set_tick_params(width = 3, length = 15)
 plt.setp(ax.spines.values(), linewidth = 3)
@@ -136,10 +146,74 @@ plt.setp(ax.spines.values(), linewidth = 3)
 figure_name = '../images/depr_across_segment_R2>0.67.png'
 
 plt.tight_layout()
-plt.show()
 
 plt.savefig(figure_name, dpi = 150)
 
+plt.show()
 
 
+
+
+### FIT SURFACE ###
+
+
+
+# # collect top n models by count frequency
+listings_sorted = listings_data.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
+camry = listings_data[listings_data['Model'] == 'Camry']
+
+camry.columns
+x = 2020 - camry['Year']
+y = camry['Mileage']
+z = camry['Price']
+
+
+# create x- and y- columns for fit
+year_age_median_price = pd.DataFrame({'Year': model_data_grouped_year['Year'],
+                            'Age': 2020 - model_data_grouped_year['Year'],
+                            'Median Price': model_data_grouped_year['Price']
+                            })
+
+# fit data to function
+from scipy.optimize import curve_fit
+def exp_function(x, a, b):
+    return a * np.exp(-b * x)
+
+popt, pcov = curve_fit(exp_function, year_age_median_price['Age'], 
+                        year_age_median_price['Median Price'], 
+                        absolute_sigma=False, maxfev=1000,
+                        bounds=((10000, 0.1), (200000, 1)))
+
+
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = Axes3D(fig)
+
+ax.scatter(x1, x2, y, alpha=0.25, edgecolor='black', color='blue')
+
+ax.set_xlabel('Age')
+ax.set_ylabel('Mileage')
+ax.set_zlabel('Price')
+
+# set axis limits
+ax.axes.set_xlim3d(left=0, right=20) 
+ax.axes.set_ylim3d(bottom=0, top=250000) 
+ax.axes.set_zlim3d(bottom=0, top=40000) 
+
+# rotate the axes and update
+angle=30
+ax.view_init(30, angle)
+
+plt.savefig('../images/3d_plot_age_miles_price.png', dpi = 600)
+plt.tight_layout()
+plt.show()
+
+
+# pull out selection
+selection = listings_sorted[:10]
+
+
+# 
 
