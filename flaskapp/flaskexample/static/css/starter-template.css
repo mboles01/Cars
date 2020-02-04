@@ -1,0 +1,14 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 50px 15px;
+  text-align: center;
+
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
