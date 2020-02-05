@@ -23,7 +23,7 @@ newerthan = 1995
 listings_data_filtered = listings_data[listings_data['Year'] > newerthan]
 
 # filter fit data to exclude poor fit quality
-depr_summary_filtered = depr_summary[depr_summary['Fit_age_R2'] > 0.67]
+depr_summary_filtered = depr_summary[depr_summary['Fit_age_R2'] > 0.01]
 
 # create dropdown menu containing make/model sorted by frequency
 model_counts = listings_data.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
@@ -83,7 +83,7 @@ selection = model_counts_filtered  # fully random
 # import numpy.random as np
 # model = 'Accord'
 
-# plot 
+# batch plot 
 from plotfunctions_4 import plot_combo_depr2
 for line in model_counts_filtered[105:].iterrows():
     
@@ -94,5 +94,38 @@ for line in model_counts_filtered[105:].iterrows():
                          depr_summary_filtered, 
                          model, 
                          model_counts, 
-                         save=True)
+                         save=False)
+
+# single plot 
+plot_combo_depr2(listings_data_filtered, 
+                         depr_summary_filtered, 
+                         model, 
+                         model_counts, 
+                         save=False)
+
+
+
+
+# depreciation curve only
+from plotfunctions import plot_depr_age
+model = 'Volt'
+newerthan = 1995
+b_lower = 0.05
+counter = 1
+counts = model_counts[model_counts.index == str(model)].iloc[0][0]
+alpha = 0.25
+save = False
+plot_depr_age(listings_data_filtered, 
+              model, 
+              newerthan,
+              b_lower,
+              counter, 
+              counts,
+              alpha,
+              save)
+
+
+
+
+
 

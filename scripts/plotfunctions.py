@@ -143,7 +143,7 @@ def plot_age_miles(x_data, y_data, x_lim, y_lim, save):
     
 # plot depreciation curve - age
     
-def plot_depr_age(data, model, newerthan, counter, counts, save): # fit_data
+def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save): # fit_data
     
     import numpy as np
     import pandas as pd
@@ -177,7 +177,7 @@ def plot_depr_age(data, model, newerthan, counter, counts, save): # fit_data
     popt, pcov = curve_fit(exp_function, year_age_median_price['Age'], 
                             year_age_median_price['Median Price'], 
                             absolute_sigma=False, maxfev=1000,
-                            bounds=((10000, 0.1), (200000, 1)))
+                            bounds=((10000, b_lower), (200000, 1)))
     
     # create predicted list price vs. age
     price_predicted = pd.DataFrame({'Age': range(0,max(year_age_median_price['Age'])+1,1),
@@ -214,7 +214,7 @@ def plot_depr_age(data, model, newerthan, counter, counts, save): # fit_data
     fig, ax = plt.subplots(1, 1, figsize=(7,7))
     ax.scatter(age_listprice['Age'], 
                age_listprice['List Price'], 
-               edgecolor='black', facecolor='blue', alpha=0.05)
+               edgecolor='black', facecolor='blue', alpha=alpha)
     
     # plot fit
     x_axis_smooth = np.arange(min(year_age_median_price['Age']), max(year_age_median_price['Age'])+1, .1)
@@ -241,12 +241,17 @@ def plot_depr_age(data, model, newerthan, counter, counts, save): # fit_data
     
     textbox_1 = r'$P(t) = a{\bullet}exp(-bt)$'
     textbox_2 = '$a$ = %5.0f \n$b$ = %0.3f' % (popt[0], popt[1]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    textbox_3 = '$Half$ $life:$ ' + str(round(0.6931/popt[1], 2)) + ' $y$'
     
     ax.text(0.54, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_1)
     
     ax.text(0.72, 0.85, textbox_2, transform = ax.transAxes, fontsize = 18, 
             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
+    
+    ax.text(0.625, 0.65, textbox_3, transform = ax.transAxes, fontsize = 18, 
+            fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
+    
     
     for tick in ax.get_xticklabels():
         tick.set_fontname('Helvetica')

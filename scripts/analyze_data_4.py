@@ -129,6 +129,7 @@ ax = sns.stripplot(x = 'Body',
                    linewidth = 3, edgecolor = 'black', alpha = 0.5)
 
 # set axis properties
+import numpy as np
 plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'),
     rotation=45, fontname = 'Helvetica', fontsize = 42, ha = 'right')
 plt.yticks(fontname = 'Helvetica', fontsize = 42)
@@ -162,27 +163,29 @@ plt.show()
 listings_sorted = listings_data.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
 camry = listings_data[listings_data['Model'] == 'Camry']
 
-camry.columns
 x = 2020 - camry['Year']
 y = camry['Mileage']
 z = camry['Price']
 
 
 # create x- and y- columns for fit
-year_age_median_price = pd.DataFrame({'Year': model_data_grouped_year['Year'],
-                            'Age': 2020 - model_data_grouped_year['Year'],
-                            'Median Price': model_data_grouped_year['Price']
-                            })
+price_year_age = pd.DataFrame({'Age': x,
+                               'Mileage': y,
+                               'Price': z,
+                               })
 
 # fit data to function
 from scipy.optimize import curve_fit
-def exp_function(x, a, b):
-    return a * np.exp(-b * x)
+def exp_function_2(x, y, a, b, c):
+    return (a/2) * (np.exp(-b * x) + np.exp(-c * y))
 
-popt, pcov = curve_fit(exp_function, year_age_median_price['Age'], 
-                        year_age_median_price['Median Price'], 
-                        absolute_sigma=False, maxfev=1000,
-                        bounds=((10000, 0.1), (200000, 1)))
+popt, pcov = curve_fit(exp_function_2, 
+                       price_year_age['Age'], 
+                       price_year_age['Mileage'], 
+                       price_year_age['Price'],
+                       absolute_sigma=False, maxfev=1000)
+
+                        # bounds=((10000, 0.1), (200000, 1)))
 
 
 
