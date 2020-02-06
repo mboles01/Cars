@@ -1,50 +1,87 @@
-# Data science is Software: #lifehacks for the Jupyer data scientist
-----------
+# Project Title
 
-### Materials for the 1.5 hr talk: (Updated for ODSC East 2017)
+One Paragraph of project description goes here
 
-[![ODSC 2017 Video](https://img.youtube.com/vi/HM56wCNxCnQ/0.jpg)](https://www.youtube.com/watch?v=HM56wCNxCnQ)
+## Getting Started
 
- - [Slides](https://github.com/drivendata/data-science-is-software/blob/master/slides/Data%20Science%20is%20Software%20-%201hr%20lecture%20-%20Slides.pdf)
- - [Commandline Demo Script](https://github.com/drivendata/data-science-is-software/blob/master/slides/commandline_script.md)
- - [Jupyter Notebook](https://github.com/drivendata/data-science-is-software/blob/master/notebooks/1-hr-lecture.ipynb)
- - [Example project that was created during the talk](https://github.com/pjbull/pumps)
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+### Prerequisites
+
+What things you need to install the software and how to install them
 
 ```
-.
-├── data
-│   └── raw
-│       ├── pumps_train_labels.csv
-│       └── pumps_train_values.csv
-├── LICENSE
-├── notebooks
-│   ├── labs
-│   │   ├── 2.0-environment-lab.ipynb
-│   │   ├── 2.0-environment-solution.ipynb
-│   │   ├── 3.0-refactoring-lab.ipynb
-│   │   ├── 3.0-refactoring-solution.ipynb
-│   │   └── 4.0-testing-lab.ipynb
-│   └── lectures
-│       ├── 2.0-environment.ipynb
-│       ├── 3.0-refactoring.ipynb
-│       └── 4.0-testing.ipynb
-├── README.md
-├── requirements.txt
-├── setup.cfg
-└── src
-    ├── features
-    │   ├── build_features.py
-    │   └── preprocess_solution.py
-    ├── __init__.py
-    ├── mcmc
-    │   └── hamiltonian.py
-    ├── model
-    │   └── train_model_solution.py
-    ├── tests
-    │   ├── example.py
-    │   ├── __init__.py
-    │   ├── test_example.py
-    │   └── test_lab4_solutions.py
-    └── utils.py
+Give examples
 ```
+
+### Installing
+
+A step by step series of examples that tell you how to get a development env running
+
+Say what the step will be
+
+```
+Give the example
+```
+
+And repeat
+
+```
+until finished
+```
+
+End with an example of getting some data out of the system or using it for a little demo
+
+## Running the tests
+
+Explain how to run the automated tests for this system
+
+### Break down into end to end tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+### And coding style tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system
+
+## Built With
+
+* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Maven](https://maven.apache.org/) - Dependency Management
+* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
