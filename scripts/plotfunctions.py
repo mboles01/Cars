@@ -276,14 +276,13 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     # return(fit_data)
 
 
-
 # plot depreciation curve - miles
     
-def plot_depr_miles(data, model, newerthan, counter, fit_data):
-        
-    import pandas as pd
+def plot_depr_miles(data, model, newerthan, b_lower, counter, counts, alpha, save): # fit_data
+    
     import numpy as np
-
+    import pandas as pd
+    
     # get model data from master list
     car_model_data_1 = data[data['Model'] == model]
     make = car_model_data_1['Make'].iloc[0]
@@ -291,27 +290,28 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     # filter data based on excluded years
     car_model_data_2 = car_model_data_1[car_model_data_1['Year'] > newerthan]
     
+    # get rid of spurious listings: with list price under $10k and "zero miles"
+    indexNames = car_model_data_2[(car_model_data_2['Mileage'] == 0) & (car_model_data_2['Price'] < 10000)].index
+    car_model_data_2.drop(indexNames, inplace=True)
+        
     # create dataframe with age and list price
     miles_listprice = pd.DataFrame({'Miles': car_model_data_2['Mileage'],
-                              'List Price': car_model_data_2['Price'],
-                              })   #.dropna()
+                                    'List Price': car_model_data_2['Price']})    
     
-        
     # fit data to function
     from scipy.optimize import curve_fit
-    def exp_function(x, a, b, c):
-        return a * np.exp(-b * x) + c
+    def exp_function(x, a, b):
+        return a * np.exp(-b * x)
     
     popt, pcov = curve_fit(exp_function, miles_listprice['Miles'], 
-                           miles_listprice['List Price'], 
-                           absolute_sigma=False, maxfev=1000,
-                           bounds=((10000, 0, 0), (200000, .003, 50000)))
+                            miles_listprice['List Price'], 
+                            absolute_sigma=False, maxfev=1000,
+                            bounds=((10000, b_lower), (200000, 1)))
     
-    # create predicted list price vs. miles 
-    price_predicted = pd.DataFrame({'Miles': range(0,max(miles_listprice['Miles'].astype(int))+1,1),
-                                    'Predicted Price': exp_function(range(0,max(miles_listprice['Miles'].astype(int))+1,1), 
-                                                                    popt[0], popt[1], popt[2]), 
-                                   })
+    # create predicted list price vs. age
+    price_predicted = pd.DataFrame({'Miles': range(0,max(miles_listprice['Miles'])+1,1),
+                                    'Predicted Price': exp_function(range(0,max(miles_listprice['Miles'])+1,1), 
+                                                                    popt[0], popt[1])})
     
     # combine list prices and predicted list prices
     miles_listprice_predprice = miles_listprice.merge(price_predicted, on='Miles', how='left')
@@ -321,21 +321,17 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     ss_res_all = np.sum(residuals_all**2)   # residual sum of squares
     ss_tot_all = np.sum((miles_listprice_predprice['List Price'] - np.mean(miles_listprice_predprice['List Price']))**2)   # total sum of squares
     r_squared_all = 1 - (ss_res_all / ss_tot_all)
-    
-    # store fit data in dataframe
-    fit_data_temp = pd.DataFrame(data = [[counter, make, model, popt[0], popt[1], popt[2], r_squared_all]])
-    fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
-        
+            
     # plot scatter data
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
-    # plt.scatter(miles_listprice['Miles'], miles_listprice['List Price'])
+    # plt.scatter(year_age_median_price['Age'], year_age_median_price['Median Price'])
     
     # set up figure axis
-    fig, ax = plt.subplots(1, 1, figsize=(8,5))
+    fig, ax = plt.subplots(1, 1, figsize=(7,7))
     ax.scatter(miles_listprice['Miles'], 
                miles_listprice['List Price'], 
-               edgecolor='black', facecolor='blue', alpha=0.1)
+               edgecolor='black', facecolor='blue', alpha=alpha)
     
     # plot fit
     x_axis_smooth = np.arange(min(miles_listprice['Miles']), max(miles_listprice['Miles'])+1, .1)
@@ -343,36 +339,35 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     
     # set x- and y- labels
     xlabel = r'Miles ($\it{m}$, k)'
-    ylabel = r'Price ($\it{P}$, \$k)'
+    ylabel = r'Price ($\it{P}$, \$k)' 
     xscale = 1000
     yscale = 1000
 
     plt.xlabel(xlabel, fontsize = 18, fontname = 'Helvetica')
     plt.ylabel(ylabel, fontsize = 18, fontname = 'Helvetica')
-    plt.title(str(make) + ' ' + str(model), fontsize = 20, fontname = 'Helvetica')
+    plt.title(str(make) + ' ' + str(model) + '  ($n$ = ' + str(counts) + ')', fontsize = 20, fontname = 'Helvetica')
     ax.tick_params(axis = 'x', labelsize = 14)
     ax.tick_params(axis = 'y', labelsize = 14)
     
-    # # force integers on x-axis
-    # from matplotlib.ticker import MaxNLocator
-    # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-    
-    # get b in scientific notation
-    from decimal import Decimal
-    b_sci = '%.3E' % Decimal(popt[1])
-    
+    # force integers on x-axis
+    from matplotlib.ticker import MaxNLocator
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        
     # set up text box
     props_1 = dict(facecolor='white', edgecolor='none', alpha=0.67)
     props_2 = dict(facecolor='white', edgecolor='none', alpha=0.67)
     
-    textbox_1 = r'$P(m) = a{\bullet}exp(-bm) + c$'
-    textbox_2 = '$a$ = %5.0f \n$b$ = %s \n$c$ =%5.0f' % (popt[0], float(b_sci), popt[2]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    textbox_1 = r'$P(m) = a{\bullet}exp(-bm)$'
+    textbox_2 = '$a$ = %5.0f \n$b$ = 1.34e-6' % (popt[0]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    # textbox_3 = '$Half$ $life:$ ' + str(round(0.6931/popt[1], 2)) + ' $y$'
     
-    ax.text(0.5, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
+    ax.text(0.52, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_1)
     
-    ax.text(0.72, 0.825, textbox_2, transform = ax.transAxes, fontsize = 18, 
+    ax.text(0.72, 0.85, textbox_2, transform = ax.transAxes, fontsize = 18, 
             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
+    
+    plt.xlim(-10000,250000)    
     
     for tick in ax.get_xticklabels():
         tick.set_fontname('Helvetica')
@@ -382,19 +377,142 @@ def plot_depr_miles(data, model, newerthan, counter, fit_data):
     plt.rcParams['axes.unicode_minus'] = False
     plt.grid(); ax.grid(color=(.9, .9, .9)); ax.set_axisbelow(True)
     
-    # scale x- and y-axes
     ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x/xscale))
     ticks = ticker.FuncFormatter(lambda y, pos: '{0:g}'.format(y/yscale))
     ax.xaxis.set_major_formatter(ticks)
     ax.yaxis.set_major_formatter(ticks)
     
-    # # save figure, plot figure
-    # figure_name = '../images/depreciation/miles_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
-    # plt.savefig(figure_name, dpi = 600)
+    # save figure
+    if save == True:
+        figure_name = '../images/depr_by_mileage_civic.png'
+        plt.savefig(figure_name, dpi = 600)
+    else:
+        pass
     plt.show()
 
     # # return fit data
     # return(fit_data)
+
+
+
+# # plot depreciation curve - miles
+    
+# def plot_depr_miles(data, model, newerthan, counter, fit_data):
+        
+#     import pandas as pd
+#     import numpy as np
+
+#     # get model data from master list
+#     car_model_data_1 = data[data['Model'] == model]
+#     make = car_model_data_1['Make'].iloc[0]
+    
+#     # filter data based on excluded years
+#     car_model_data_2 = car_model_data_1[car_model_data_1['Year'] > newerthan]
+    
+#     # create dataframe with age and list price
+#     miles_listprice = pd.DataFrame({'Miles': car_model_data_2['Mileage'],
+#                               'List Price': car_model_data_2['Price'],
+#                               })   #.dropna()
+    
+        
+#     # fit data to function
+#     from scipy.optimize import curve_fit
+#     def exp_function(x, a, b, c):
+#         return a * np.exp(-b * x) + c
+    
+#     popt, pcov = curve_fit(exp_function, miles_listprice['Miles'], 
+#                            miles_listprice['List Price'], 
+#                            absolute_sigma=False, maxfev=1000,
+#                            bounds=((10000, 0, 0), (200000, .003, 50000)))
+    
+#     # create predicted list price vs. miles 
+#     price_predicted = pd.DataFrame({'Miles': range(0,max(miles_listprice['Miles'].astype(int))+1,1),
+#                                     'Predicted Price': exp_function(range(0,max(miles_listprice['Miles'].astype(int))+1,1), 
+#                                                                     popt[0], popt[1], popt[2]), 
+#                                    })
+    
+#     # combine list prices and predicted list prices
+#     miles_listprice_predprice = miles_listprice.merge(price_predicted, on='Miles', how='left')
+    
+#     # calculate fit quality (diff bw all prices and predicted value)
+#     residuals_all = miles_listprice_predprice['List Price'] - miles_listprice_predprice['Predicted Price']
+#     ss_res_all = np.sum(residuals_all**2)   # residual sum of squares
+#     ss_tot_all = np.sum((miles_listprice_predprice['List Price'] - np.mean(miles_listprice_predprice['List Price']))**2)   # total sum of squares
+#     r_squared_all = 1 - (ss_res_all / ss_tot_all)
+    
+#     # store fit data in dataframe
+#     fit_data_temp = pd.DataFrame(data = [[counter, make, model, popt[0], popt[1], popt[2], r_squared_all]])
+#     fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
+        
+#     # plot scatter data
+#     import matplotlib.pyplot as plt
+#     import matplotlib.ticker as ticker
+#     # plt.scatter(miles_listprice['Miles'], miles_listprice['List Price'])
+    
+#     # set up figure axis
+#     fig, ax = plt.subplots(1, 1, figsize=(7,7))
+#     ax.scatter(miles_listprice['Miles'], 
+#                miles_listprice['List Price'], 
+#                edgecolor='black', facecolor='blue', alpha=0.1)
+    
+#     # plot fit
+#     x_axis_smooth = np.arange(min(miles_listprice['Miles']), max(miles_listprice['Miles'])+1, .1)
+#     plt.plot(x_axis_smooth, exp_function(x_axis_smooth, *popt), '#ff4c00', linewidth=3)
+    
+#     # set x- and y- labels
+#     xlabel = r'Miles ($\it{m}$, k)'
+#     ylabel = r'Price ($\it{P}$, \$k)'
+#     xscale = 1000
+#     yscale = 1000
+
+#     plt.xlabel(xlabel, fontsize = 18, fontname = 'Helvetica')
+#     plt.ylabel(ylabel, fontsize = 18, fontname = 'Helvetica')
+#     plt.title(str(make) + ' ' + str(model), fontsize = 20, fontname = 'Helvetica')
+#     ax.tick_params(axis = 'x', labelsize = 14)
+#     ax.tick_params(axis = 'y', labelsize = 14)
+    
+#     # # force integers on x-axis
+#     # from matplotlib.ticker import MaxNLocator
+#     # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    
+#     # get b in scientific notation
+#     from decimal import Decimal
+#     b_sci = '%.3E' % Decimal(popt[1])
+    
+#     # set up text box
+#     props_1 = dict(facecolor='white', edgecolor='none', alpha=0.67)
+#     props_2 = dict(facecolor='white', edgecolor='none', alpha=0.67)
+    
+#     textbox_1 = r'$P(m) = a{\bullet}exp(-bm) + c$'
+#     textbox_2 = '$a$ = %5.0f \n$b$ = %s \n$c$ =%5.0f' % (popt[0], float(b_sci), popt[2]) + '\n$R^{2}$ = %5.2f' % r_squared_all
+    
+#     ax.text(0.5, 0.95, textbox_1, transform = ax.transAxes, fontsize = 18, 
+#             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_1)
+    
+#     ax.text(0.72, 0.825, textbox_2, transform = ax.transAxes, fontsize = 18, 
+#             fontname = 'Helvetica', verticalalignment = 'top', bbox = props_2)
+    
+#     for tick in ax.get_xticklabels():
+#         tick.set_fontname('Helvetica')
+#     for tick in ax.get_yticklabels():
+#         tick.set_fontname('Helvetica')
+    
+#     plt.rcParams['axes.unicode_minus'] = False
+#     plt.grid(); ax.grid(color=(.9, .9, .9)); ax.set_axisbelow(True)
+    
+#     # scale x- and y-axes
+#     ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x/xscale))
+#     ticks = ticker.FuncFormatter(lambda y, pos: '{0:g}'.format(y/yscale))
+#     ax.xaxis.set_major_formatter(ticks)
+#     ax.yaxis.set_major_formatter(ticks)
+    
+#     # # save figure, plot figure
+#     # figure_name = '../images/depreciation/miles_depreciation_plots_by_model/' + str(counter) + '_' + str(model) + '.png'
+#     # plt.savefig(figure_name, dpi = 600)
+#     plt.show()
+
+#     # # return fit data
+#     # return(fit_data)
 
 
 def plot_depr_R2(selection):
@@ -424,8 +542,8 @@ def plot_depr_R2(selection):
     r3 = [x + barWidth/1.25 for x in r2]
      
     # Make the plot
-    plt.bar(r2, bars_age, color='blue', width=barWidth, edgecolor='white', label='Price ~ Age', zorder = 2)
-    plt.bar(r3, bars_miles, color='#ff4c00', width=barWidth, edgecolor='white', label='Price ~ Miles')
+    plt.bar(r2, bars_age, color='blue', width=barWidth, edgecolor='white', label='Price ~ Age')
+    plt.bar(r3, bars_miles, color='#ff4c00', width=barWidth, edgecolor='white', label='Price ~ Miles', zorder = 2)
     # plt.bar(r3, bars_cw, color='#ff4c00', width=barWidth, edgecolor='white', label='24%, 15%')
      
     # Add xticks on the middle of the group bars

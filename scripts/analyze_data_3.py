@@ -59,7 +59,8 @@ pred_data.to_csv('../data/depreciation/pred_data_2.csv', index=False)
 
 # import data, choose selection
 fit_data = pd.read_csv('../data/depreciation/fit_data_2.csv')
-selection = fit_data[fit_data['Model'].isin(['Mustang', 'Camaro', 'Challenger']) ]
+selection = fit_data[:5]
+# selection = fit_data[fit_data['Model'].isin(['Mustang', 'Camaro', 'Challenger']) ]
 selection.columns
 
 # plot it
@@ -165,7 +166,7 @@ bins = plot_hist_hl(data_halflife, user_choice_halflife, make_input, model_input
 
 ### PLOT DEPRECIATION CURVES ###
 
-listings_sorted = listings.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
+listings_sorted = listings_data.groupby('Model').count().iloc[:,1].to_frame().rename(columns={'Make':'Counts'}).sort_values(by = 'Counts', ascending = False)
 newerthan = 1995
 
 # plot age depreciation curves for selected models
@@ -177,7 +178,7 @@ for counter, line in enumerate(selection.index,1):
     model = line
     counts = make_model_list_sorted[make_model_list_sorted['Model'] == model]['Count'].iloc[0]
     print(counts)
-    fit_data_age = plot_depr_age(listings, model, newerthan, counter, counts, save=False)
+    # fit_data_age = plot_depr_age(listings, model, newerthan, counter, counts, save=False)
 
 
 
@@ -186,9 +187,24 @@ for counter, line in enumerate(selection.index,1):
 # plot miles depreciation curves for selected models
 from plotfunctions import plot_depr_miles
 
-cars = selection
-fit_data_miles = pd.DataFrame()
-for counter, line in enumerate(cars.index,1):
-    print(counter, line)
-    model = line    
-    plot_depr_miles(listings, model, newerthan, counter, fit_data_miles)
+# cars = selection
+# fit_data_miles = pd.DataFrame()
+# for counter, line in enumerate(cars.index,1):
+#     print(counter, line)
+#     model = line    
+#     plot_depr_miles(listings_data, model, newerthan, counter, counts, save=False)
+
+newerthan = 1995
+counter = 1
+counts = 1484
+b_lower = 0.0000001
+alpha = 0.15
+plot_depr_miles(listings_data, model, newerthan, b_lower, counter, counts, alpha, save=True)
+
+
+
+
+
+
+
+
