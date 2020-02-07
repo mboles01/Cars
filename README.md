@@ -4,7 +4,7 @@ Your car is almost certainly the largest depreciating asset you’ll ever buy. U
 
 Website: www.dealsonwheels.live
 
-Slides: [Google Slides](t.ly/xBEY5)
+Slides: [Google Slides](https://docs.google.com/presentation/d/1KNRXbkX_s0U0u-Yd6xVhzvTzUBxkICbdNbBvkWmaS_M/edit#slide=id.g7d6a2fc1e6_0_0)
 
 
 ## Files
