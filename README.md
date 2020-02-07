@@ -16,7 +16,7 @@ Slides: [Google Slides](https://docs.google.com/presentation/d/1KNRXbkX_s0U0u-Yd
 
 * `clean_data.py`: these files load .csv files, concatenate dataframes, pull out data of interest, rename/reorder columns, and remove spurious listings. 
 
-### Exploratory data analysis and fitting
+### Data analysis and modeling
 * `analyze_data.py`: these files pull .csv file with listing information, create histogram and scatter plots, fit price data to car age and mileage across all make/model combinations, and plot 2D and 3D depreciation curves and box plots.
 
 ### `./flaskapp/flaskexample/`
