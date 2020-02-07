@@ -1,7 +1,9 @@
-# Deals On Wheels: let the market show you how to buy a better car
+# Deals On Wheels: 
+## Let the market show you how to buy a better car
 Your car is almost certainly the largest depreciating asset you’ll ever buy. Unfortunately, the resources available to consumers to help inform their car buying decision have serious limitations: they are often human-curated, feature a small subset of what’s available, and do not support their claims with data. As a Data Science Fellow at Insight Data Science, I used Autotrader listings to develop an app that maps out car depreciation costs across hundreds of models and makes a recommendation to the user that will minimize their costs and maximize their satisfaction. 
 
 Website: www.dealsonwheels.live
+
 Slides: t.ly/dNgYY 
 
 
@@ -17,7 +19,7 @@ Slides: t.ly/dNgYY
 ### Exploratory data analysis and fitting
 * `analyze_data.py`: these files pull .csv file with listing information, create histogram and scatter plots, fit price data to car age and mileage across all make/model combinations, and plot 2D and 3D depreciation curves and box plots.
 
-### `./flaskapp/flaskexample`
+### `./flaskapp/flaskexample/`
 
 ### Web app development
 
