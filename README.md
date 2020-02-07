@@ -27,7 +27,7 @@ Slides: t.ly/dNgYY
 
 * `.flaskapp/flaskexample/templates/`: contains html template files for the web pages listed above.
 
-* `fitdata.py`: pulls data from .csv file, filters outliers, uses *Statsmodels.formula.api* to perform ordinary least squares fit and summarize the result, uses *Sklearn.linear_model* to create price predictions using the fitted coefficients, and uses functions defined in `plotfunctions.py` to plot a histogram of the residuals
+
 
 ### Libraries
 * [Requests](https://2.python-requests.org/en/master/)
