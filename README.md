@@ -1,87 +1,41 @@
-# Project Title
+# Deals On Wheels: let the market show you how to buy a better car
+Your car is almost certainly the largest depreciating asset you’ll ever buy. Unfortunately, the resources available to consumers to help inform their car buying decision have serious limitations: they are often human-curated, feature a small subset of what’s available, and do not support their claims with data. As a Data Science Fellow at Insight Data Science, I used Autotrader listings to develop an app that maps out car depreciation costs across hundreds of models and makes a recommendation to the user that will minimize their costs and maximize their satisfaction. 
 
-One Paragraph of project description goes here
+Website: www.dealsonwheels.live
+Slides: t.ly/dNgYY 
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+## Files
 
-### Prerequisites
+### `./scripts/`
 
-What things you need to install the software and how to install them
+### Web scraping
+* `scrape_web.py`: uses *Requests* to connect to Autotrader, *html* to get web content, and *Pandas* to clean and store scraped content as a dataframe
 
-```
-Give examples
-```
+* `clean_data.py`: these files load .csv files, concatenate dataframes, pull out data of interest, rename/reorder columns, and remove spurious listings. 
 
-### Installing
+### Exploratory data analysis and fitting
+* `analyze_data.py`: these files pull .csv file with listing information, create histogram and scatter plots, fit price data to car age and mileage across all make/model combinations, and plot 2D and 3D depreciation curves and box plots.
 
-A step by step series of examples that tell you how to get a development env running
+### `./flaskapp/flaskexample`
 
-Say what the step will be
+### Web app development
 
-```
-Give the example
-```
+* `views.py`: loads listing data and defines @app.route functions for /index, /models, /output, /random, and /about web pages.
 
-And repeat
+* `.flaskapp/flaskexample/templates/`: contains html template files for the web pages listed above.
 
-```
-until finished
-```
+* `fitdata.py`: pulls data from .csv file, filters outliers, uses *Statsmodels.formula.api* to perform ordinary least squares fit and summarize the result, uses *Sklearn.linear_model* to create price predictions using the fitted coefficients, and uses functions defined in `plotfunctions.py` to plot a histogram of the residuals
 
-End with an example of getting some data out of the system or using it for a little demo
+### Libraries
+* [Requests](https://2.python-requests.org/en/master/)
+* [Html](https://pypi.org/project/html/)
+* [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+* [Pandas](https://pandas.pydata.org/)
+* [Matplotlib](https://matplotlib.org/)
+* [Seaborn](https://seaborn.pydata.org/)
+* [Statsmodels](https://www.statsmodels.org/stable/index.html)
+* [Scikit-learn](https://scikit-learn.org/stable/)
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+### Acknowledgement
+Written by **Michael Boles** in February 2020 with help from the *Insight* and *StackOverflow* communities.
