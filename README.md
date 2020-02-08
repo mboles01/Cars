@@ -1,50 +1,43 @@
-# Data science is Software: #lifehacks for the Jupyer data scientist
-----------
+# Deals On Wheels: 
+## Let the market show you how to buy a better car
+Your car is almost certainly the largest depreciating asset you’ll ever buy. Unfortunately, the resources available to consumers to help inform their car buying decision have serious limitations: they are often human-curated, feature a small subset of what’s available, and do not support their claims with data. As a Data Science Fellow at Insight Data Science, I used Autotrader listings to develop an app that maps out car depreciation costs across hundreds of models and makes a recommendation to the user that will minimize their costs and maximize their satisfaction. 
 
-### Materials for the 1.5 hr talk: (Updated for ODSC East 2017)
+Website: www.dealsonwheels.live
 
-[![ODSC 2017 Video](https://img.youtube.com/vi/HM56wCNxCnQ/0.jpg)](https://www.youtube.com/watch?v=HM56wCNxCnQ)
-
- - [Slides](https://github.com/drivendata/data-science-is-software/blob/master/slides/Data%20Science%20is%20Software%20-%201hr%20lecture%20-%20Slides.pdf)
- - [Commandline Demo Script](https://github.com/drivendata/data-science-is-software/blob/master/slides/commandline_script.md)
- - [Jupyter Notebook](https://github.com/drivendata/data-science-is-software/blob/master/notebooks/1-hr-lecture.ipynb)
- - [Example project that was created during the talk](https://github.com/pjbull/pumps)
+Slides: [Google Slides](https://docs.google.com/presentation/d/1KNRXbkX_s0U0u-Yd6xVhzvTzUBxkICbdNbBvkWmaS_M/edit#slide=id.g7d6a2fc1e6_0_0)
 
 
-```
-.
-├── data
-│   └── raw
-│       ├── pumps_train_labels.csv
-│       └── pumps_train_values.csv
-├── LICENSE
-├── notebooks
-│   ├── labs
-│   │   ├── 2.0-environment-lab.ipynb
-│   │   ├── 2.0-environment-solution.ipynb
-│   │   ├── 3.0-refactoring-lab.ipynb
-│   │   ├── 3.0-refactoring-solution.ipynb
-│   │   └── 4.0-testing-lab.ipynb
-│   └── lectures
-│       ├── 2.0-environment.ipynb
-│       ├── 3.0-refactoring.ipynb
-│       └── 4.0-testing.ipynb
-├── README.md
-├── requirements.txt
-├── setup.cfg
-└── src
-    ├── features
-    │   ├── build_features.py
-    │   └── preprocess_solution.py
-    ├── __init__.py
-    ├── mcmc
-    │   └── hamiltonian.py
-    ├── model
-    │   └── train_model_solution.py
-    ├── tests
-    │   ├── example.py
-    │   ├── __init__.py
-    │   ├── test_example.py
-    │   └── test_lab4_solutions.py
-    └── utils.py
-```
+## Files
+
+### `./scripts/`
+
+### Web scraping
+* `scrape_web.py`: uses *Requests* to connect to Autotrader, *html* to get web content, and *Pandas* to clean and store scraped content as a dataframe
+
+* `clean_data.py`: these files load .csv files, concatenate dataframes, pull out data of interest, rename/reorder columns, and remove spurious listings. 
+
+### Data analysis and modeling
+* `analyze_data.py`: these files pull .csv file with listing information, create histogram and scatter plots, fit price data to car age and mileage across all make/model combinations, and plot 2D and 3D depreciation curves and box plots.
+
+### `./flaskapp/flaskexample/`
+
+### Web app development
+
+* `views.py`: loads listing data and defines @app.route functions for /index, /models, /output, /random, and /about web pages.
+
+* `.flaskapp/flaskexample/templates/`: contains html template files for the web pages listed above.
+
+
+
+### Libraries
+* [Requests](https://2.python-requests.org/en/master/)
+* [Html](https://pypi.org/project/html/)
+* [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+* [Pandas](https://pandas.pydata.org/)
+* [Matplotlib](https://matplotlib.org/)
+* [Seaborn](https://seaborn.pydata.org/)
+* [Statsmodels](https://www.statsmodels.org/stable/index.html)
+* [Scikit-learn](https://scikit-learn.org/stable/)
+
+### Acknowledgement
+Written by **Michael Boles** in February 2020 with help from the *Insight* and *StackOverflow* communities.
