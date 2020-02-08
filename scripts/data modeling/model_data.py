@@ -83,8 +83,9 @@ columns = listings_dummies.columns
 
 # encode each make of interest with number
 make_counts = listings['Make'].value_counts()
-makes_of_interest = make_counts[:10]
+# makes_of_interest = make_counts[:3]
 # makes_of_interest = ['Ford', 'Chevrolet', 'Honda', 'Toyota', 'Mercedes-Benz', 'BMW', 'Volkswagen', 'Porsche']
+makes_of_interest = ['Ford', 'Mercedes-Benz']
 make_number = pd.DataFrame({'Make': makes_of_interest.index, 
                             'Make code': list(range(len(makes_of_interest)))})
 
@@ -98,57 +99,61 @@ listings_make_filtered = listings_make_numbers[listings_make_numbers['Age'] < 25
 
 ### set features (independent) and labels (dependent)
 
-# full set of model dummies
-X = listings_dummies_filtered.drop(columns='Price')
-y = listings_dummies_filtered['Price']
+# # full set of model dummies
+# X = listings_dummies_filtered.drop(columns='Price')
+# y = listings_dummies_filtered['Price']
 
 # makes labels only
 X = listings_make_filtered.drop(columns=['Make', 'Make code'])
 y = listings_make_filtered['Make code']
 
 
-### STATSMODELS ###
+# ### STATSMODELS ###
 
-import sys
-sys.path.insert(0, "./ancillary functions/")
+# import sys
+# sys.path.insert(0, "./ancillary functions/")
 
-import statsmodels.api as sm
-from helper_functions import SMWrapper
-from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import LinearRegression
-
-
-# simple fit of entire data set
-model = sm.OLS(y, X)
-results_train = model.fit()
-summary_train = results_train.summary()
-summary_train_text = summary_train.as_text()
-pvalues_train = results_train.pvalues
+# import statsmodels.api as sm
+# from helper_functions import SMWrapper
+# from sklearn.model_selection import cross_val_score
+# from sklearn.linear_model import LinearRegression
 
 
-# cross-validation
-print(cross_val_score(SMWrapper(sm.OLS), X, y, cv=5, scoring='r2'))
-print(cross_val_score(LinearRegression(), X, y, cv=5, scoring='r2'))
+# # simple fit of entire data set
+# model = sm.OLS(y, X)
+# results_train = model.fit()
+# summary_train = results_train.summary()
+# summary_train_text = summary_train.as_text()
+# pvalues_train = results_train.pvalues
 
 
+# # cross-validation
+# print(cross_val_score(SMWrapper(sm.OLS), X, y, cv=5, scoring='r2'))
+# print(cross_val_score(LinearRegression(), X, y, cv=5, scoring='r2'))
 
 
 # split into training and test sets
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# feature scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
 
-# fit data - Statsmodels
-model = sm.OLS(y_train, X_train)
 
-# get training set summary
-results_train = model.fit()
-summary_train = results_train.summary()
-summary_train_text = summary_train.as_text()
-pvalues_train = results_train.pvalues
+# # fit data - Statsmodels
+# model = sm.OLS(y_train, X_train)
 
-# predict test set
-y_pred = results_train.predict(X_test)
+# # get training set summary
+# results_train = model.fit()
+# summary_train = results_train.summary()
+# summary_train_text = summary_train.as_text()
+# pvalues_train = results_train.pvalues
+
+# # predict test set
+# y_pred = results_train.predict(X_test)
 
 
 
@@ -160,12 +165,21 @@ y_pred = results_train.predict(X_test)
 # apply linear discriminant analysis (LDA)
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 lda = LDA(n_components = 2)
-X_lda = lda.fit_transform(X, y)
+X_train = lda.fit_transform(X_train, y_train)
+X_test = lda.transform(X_test)
 
-# fit logistic regression to data set
+# fit logistic regression to training set
 from sklearn.linear_model import LogisticRegression
 classifier = LogisticRegression(random_state=0, solver='lbfgs')
-classifier.fit(X, y)
+classifier.fit(X_train, y_train)
+
+# predict test set results
+y_pred = classifier.predict(X_test)
+
+# create confusion matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test, y_pred)
+score = accuracy_score(y_test, y_pred)
 
 
 # visualize LDA results
@@ -191,7 +205,7 @@ plt.xlabel('Dimension 1')
 plt.ylabel('Dimension 2')
 #plt.xlabel('Dimension 1 (%s%%)' % str(int(explained_variance[0]*100)))
 #plt.ylabel('Dimension 2 (%s%%)' % str(int(explained_variance[1]*100)))
-plt.savefig('../images/LDA_1.png', bbox_inches='tight', dpi = 400) 
+# plt.savefig('../images/LDA_1.png', bbox_inches='tight', dpi = 400) 
 plt.show()
 
 
