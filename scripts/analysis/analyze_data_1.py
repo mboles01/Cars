@@ -86,6 +86,7 @@ plot_age_miles(x_data, y_data, x_lim, y_lim, save)
 
 ### HISTOGRAM PLOT: PRICE ###
 import numpy as np
+listings_filtered = listings
 data = listings_filtered['Price']
 data_filtered = data[(data != np.inf) & (data != 0)]
 
@@ -94,24 +95,59 @@ average = int(np.nanmean(data_filtered))
 median = int(np.nanmedian(data_filtered))
 stdev = int(np.std(data_filtered))   
 props = dict(facecolor='white', edgecolor='none', alpha=0.67)
-textbox = '$List$ $price$ \nAverage = %.0f \nMedian = %.0f \nStdev = %.0f' % (average, median, stdev)
+textbox = '$List$ $price$ $(\$)$ \nAverage = %s \nMedian = %s \nStdev = %s' % (round(average,-2), 
+                                                                     round(median,-2), 
+                                                                     round(stdev,-2))
 
 import numpy as np
 binwidth = 1000
 xmin = 0
 xmax = 80000
 ymin = 0
-ymax = 3500
-xlabel = 'Price'
+ymax = 4000
+xlabel = 'Price ($k)'
 ylabel = 'Counts'
-figure_name = '../images/Price_hist.png'
+figure_name = '../images/basic_eda/Price_hist_2.png'
 
-from plotfunctions import plot_hist
+
+import sys
+sys.path.insert(0, "./data visualization/")
+from plotfunctions_1 import plot_hist
 plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
 
 
 
 
+### HISTOGRAM PLOT: MILES ###
+import numpy as np
+listings_filtered = listings
+data = listings_filtered['Mileage']
+data_filtered = data[data != np.inf]
+
+# textbox
+average = int(np.nanmean(data_filtered))
+median = int(np.nanmedian(data_filtered))
+stdev = int(np.std(data_filtered))   
+props = dict(facecolor='white', edgecolor='none', alpha=0.67)
+textbox = '$Mileage$ $(miles)$ \nAverage = %s \nMedian = %s \nStdev = %s' % (round(average,-2), 
+                                                                     round(median,-2), 
+                                                                     round(stdev,-2))
+
+import numpy as np
+binwidth = 5000
+xmin = 0
+xmax = 250000
+ymin = 0
+ymax = 3500
+xlabel = 'Miles (thousands)'
+ylabel = 'Counts'
+figure_name = '../images/basic_eda/Miles_hist_1.png'
+
+
+import sys
+sys.path.insert(0, "./data visualization/")
+from plotfunctions_1 import plot_hist
+plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
 
 
 
@@ -127,19 +163,21 @@ average = int(np.nanmean(data_filtered))
 median = int(np.nanmedian(data_filtered))
 stdev = int(np.std(data_filtered))   
 props = dict(facecolor='white', edgecolor='none', alpha=0.67)
-textbox = '$Miles$ $per$ $year$ \nAverage = %.0f \nMedian = %.0f \nStdev = %.0f' % (average, median, stdev)
+textbox = '$Miles$ $per$ $year$ \nAverage = %s \nMedian = %s \nStdev = %s' % (round(average,-2), 
+                                                                              round(median,-2), 
+                                                                              round(stdev,-2))
 
 # plot params
-binwidth = 200
+binwidth = 400
 xmin = 0
 xmax = 30000
 ymin = 0
-ymax = 1300
-xlabel = 'Miles per year'
+ymax = 3000
+xlabel = 'Miles per year (k)'
 ylabel = 'Counts'
-figure_name = '../images/Miles_vs_age_hist.png'
+figure_name = '../images/basic_eda/Miles_vs_age_hist_2.png'
 
-from plotfunctions import plot_hist
+from plotfunctions_1 import plot_hist
 plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
 
 
@@ -149,7 +187,8 @@ plot_hist(data_filtered, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabe
 
 
 ### BAR PLOT: MOST COMMON CARS ###
-common_cars = make_model_list_top[:25]
+make_model_list_top = pd.read_csv('../data/make_model_list_sorted.csv')
+common_cars = make_model_list_top[:20]
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots(1,1,figsize=(10,7))
 plt.bar(common_cars['Model'], common_cars['Count'], color='blue', edgecolor='black')
@@ -157,8 +196,8 @@ plt.xticks(rotation=45, ha='right')
 plt.title('Most common cars', size=22)
 plt.xlabel('Model', size=18)
 plt.ylabel('Count', size=18)
-plt.tight_layout()
-plt.savefig('../images/Common_cars.png', dpi = 200)
+# plt.tight_layout()
+plt.savefig('../images/basic_eda/Common_cars_2.png', bbox_inches='tight', dpi = 200)
 
 
 

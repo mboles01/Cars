@@ -30,7 +30,7 @@ def plot_hist(data, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, yl
     for tick in ax.get_yticklabels():
         tick.set_fontname('Helvetica')
         
-    ax.text(0.64, 0.95, textbox, transform = ax.transAxes, fontsize = 18, 
+    ax.text(0.6, 0.95, textbox, transform = ax.transAxes, fontsize = 18, 
             fontname = 'Helvetica', verticalalignment = 'top', bbox = props)
 
     plt.rcParams['axes.unicode_minus'] = False
@@ -38,6 +38,11 @@ def plot_hist(data, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, yl
     plt.grid(); ax.grid(color=(.9, .9, .9)); ax.set_axisbelow(True)
 
     fig.tight_layout()
+    
+    import matplotlib.ticker as ticker
+    xscale = 1000
+    ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x/xscale))
+    ax.xaxis.set_major_formatter(ticks)
 
     plt.savefig(figure_name, dpi = 600)
     plt.show()

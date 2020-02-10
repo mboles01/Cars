@@ -83,10 +83,10 @@ columns = listings_dummies.columns
 
 # encode each make of interest with number
 make_counts = listings['Make'].value_counts()
-# makes_of_interest = make_counts[:3]
+# makes_of_interest = make_counts[:3].index
 # makes_of_interest = ['Ford', 'Chevrolet', 'Honda', 'Toyota', 'Mercedes-Benz', 'BMW', 'Volkswagen', 'Porsche']
 makes_of_interest = ['Ford', 'Mercedes-Benz']
-make_number = pd.DataFrame({'Make': makes_of_interest.index, 
+make_number = pd.DataFrame({'Make': makes_of_interest, 
                             'Make code': list(range(len(makes_of_interest)))})
 
 # merge make numbers with selected data

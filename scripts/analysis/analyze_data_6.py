@@ -72,6 +72,7 @@ os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars/scripts')
 # open full listings data set and depreciation summary
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 listings_data = pd.read_csv('../data/listings5_filtered.csv')
 depr_summary = pd.read_csv('../data/depr_summary_filtered.csv')
 
@@ -131,13 +132,71 @@ def exp_function_2_2(x, y, a, b, c):
 zs = np.array(exp_function_2_2(np.ravel(X), np.ravel(Y), popt[0], popt[1], popt[2]))
 Z = zs.reshape(X.shape)
 
-
-
-fig = plt.figure(figsize = (13,8))
-ax = fig.add_subplot(111, projection='3d')
-
 # from sklearn.datasets import make_regression
 # X, y = make_regression(random_state=1, n_samples=300, noise=50)
+
+
+
+
+### PLOT ###
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure(figsize = (10,7))
+# ax = fig.add_subplot(111, projection='3d')
+ax = Axes3D(fig) 
+
+ax.plot_surface(X, Y, Z, 
+                cmap=plt.cm.coolwarm, 
+                alpha=0.67, 
+                edgecolor='white', 
+                linewidth=0.25, 
+                zorder=-1)
+
+ax.scatter(x_filtered, 
+           y_filtered, 
+           z_filtered, 
+           alpha=0.25, 
+           lw=0.25, 
+           facecolor='blue',
+           edgecolor='black',
+           zorder=1)
+
+ax.axes.set_xlim3d(left=0, right=20) 
+ax.axes.set_ylim3d(top=0, bottom=250000) 
+ax.axes.set_zlim3d(bottom=0, top=30000) 
+
+x_start, x_end = ax.get_xlim()
+z_start, z_end = ax.get_zlim()
+ax.xaxis.set_ticks(np.arange(x_start, x_end, 5))
+ax.zaxis.set_ticks(np.arange(z_start, z_end, 10000))
+
+ax.tick_params(axis = 'x', labelsize = 14)
+ax.tick_params(axis = 'y', labelsize = 14)
+ax.tick_params(axis = 'z', labelsize = 14)
+
+ax.set_xlabel('\n\nAge ($t$, years)', fontsize = 16, fontname = 'Helvetica')
+ax.set_ylabel('\n\n      Mileage ($m$, k miles)', fontsize = 16, fontname = 'Helvetica')
+ax.set_zlabel('\n\nPrice ($k)', fontsize = 16, fontname = 'Helvetica', rotation=-90)
+
+plt.rcParams['axes.unicode_minus'] = False
+plt.grid(); ax.grid(color=(.9, .9, .9)); ax.set_axisbelow(True)
+
+import matplotlib.ticker as ticker
+ticks = ticker.FuncFormatter(lambda y_filtered, pos: '{0:g}'.format(y_filtered/1000))
+ticks = ticker.FuncFormatter(lambda z_filtered, pos: '{0:g}'.format(z_filtered/1000))
+ax.yaxis.set_major_formatter(ticks)
+ax.zaxis.set_major_formatter(ticks)
+
+# ax.view_init(10, 315)
+ax.view_init(10, -135)
+
+ax.dist = 9.75
+
+plt.savefig('../images/3d_plots/3d_plot_13.png', dpi = 600)
+
+plt.show()  
+
+
 
 
 # Begin plotting
