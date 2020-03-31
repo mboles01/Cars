@@ -161,8 +161,8 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     car_model_data_2 = car_model_data_1[car_model_data_1['Year'] > newerthan]
     
     # create dataframe with age and list price
-    age_listprice = pd.DataFrame({'Age': 2020 - car_model_data_2['Year'],
-                              'List Price': car_model_data_2['Price'],
+    age_listprice = pd.DataFrame({'Age': 2020 - car_model_data_1['Year'],
+                              'List Price': car_model_data_1['Price'],
                               })
     
     # group all listings by year, taking median value for curve fitting
@@ -183,6 +183,8 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
                             year_age_median_price['Median Price'], 
                             absolute_sigma=False, maxfev=1000,
                             bounds=((10000, b_lower), (200000, 1)))
+    
+    print(popt[1])
     
     # create predicted list price vs. age
     price_predicted = pd.DataFrame({'Age': range(0,max(year_age_median_price['Age'])+1,1),
@@ -271,7 +273,7 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     
     # save figure
     if save == True:
-        figure_name = '../images/depr_by_model/' + str(counter) + '_' + str(model) + '.png'
+        figure_name = './images/depr_by_model/' + str(counter) + '_' + str(model) + '.png'
         plt.savefig(figure_name, dpi = 600)
     else:
         pass

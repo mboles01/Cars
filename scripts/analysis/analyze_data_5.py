@@ -30,7 +30,7 @@ depr_by_location = pd.DataFrame()
 for model in models:
 
     # model = 'Camry'
-    model_data = listings_data[listings_data['Model'] == str(model)]
+    model_data = listings_data[(listings_data['Model'] == str(model)) & (listings_data['Year'] > 1995)]
     
     cities = ['Chicago, IL', 'Los Angeles, CA', 'San Francisco, CA', 'New York, NY', 'Houston, TX']
     
@@ -74,6 +74,7 @@ for model in models:
         
         depr_by_location = depr_by_location.append(row_temp, ignore_index=True)
 
+depr_by_location.to_csv('depr_by_location.csv', index=False)
 
 # plot depreciation by city across top ten models
         
@@ -82,7 +83,7 @@ import matplotlib.pyplot as plt
 # set up plot
 fig, ax = plt.subplots(1, 1, figsize=(12,10))
 # plt.xlabel('Model', fontsize = 22, fontname = 'Helvetica')
-plt.ylabel('Half life (years)', fontsize = 24, fontname = 'Helvetica')
+plt.ylabel('Half-life (years)', fontsize = 24, fontname = 'Helvetica')
 plt.ylim(0,11)
 
 # set width of bar
@@ -127,7 +128,7 @@ plt.setp(ax.spines.values(), linewidth = 2)
 
 # Create legend & Show graphic
 plt.legend(prop={'size':22})
-plt.title('Half life by location', fontsize = 28, fontname = 'Helvetica')
+plt.title('Half-life by location', fontsize = 28, fontname = 'Helvetica')
 plt.tight_layout()
 plt.savefig('../images/half_life_by_location_cars', dpi = 150)
 plt.show()
@@ -156,7 +157,7 @@ ax = sns.stripplot(x = 'Location',
                    y = 'Half life', 
                    data = depr_by_location,
                     order = list(order.index), 
-                   jitter = 0.25, size = 15,
+                   jitter = 0.125, size = 15,
                    linewidth = 3, edgecolor = 'black', alpha = 0.5)
 
 # set axis properties
@@ -165,7 +166,7 @@ plt.yticks(fontname = 'Helvetica', fontsize = 42)
 # plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'))
 
 plt.xlabel('Location', fontsize = 55, fontname = 'Arial', fontweight = 'bold')
-plt.ylabel('Half life (years)', fontsize = 55, fontname = 'Arial', 
+plt.ylabel('Half-life (years)', fontsize = 55, fontname = 'Arial', 
            fontweight = 'bold')
 
 ax.set_ylim(4, 10); ax.yaxis.labelpad = 25

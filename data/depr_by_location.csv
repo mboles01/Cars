@@ -1,0 +1,51 @@
+Location,Model,Half life
+"Chicago, IL",F150,5.703
+"Los Angeles, CA",F150,6.823
+"San Francisco, CA",F150,6.764
+"New York, NY",F150,5.671
+"Houston, TX",F150,5.802
+"Chicago, IL",Camry,5.568
+"Los Angeles, CA",Camry,5.978
+"San Francisco, CA",Camry,6.124
+"New York, NY",Camry,6.803
+"Houston, TX",Camry,6.751
+"Chicago, IL",Grand Cherokee,5.53
+"Los Angeles, CA",Grand Cherokee,5.518
+"San Francisco, CA",Grand Cherokee,6.644
+"New York, NY",Grand Cherokee,5.328
+"Houston, TX",Grand Cherokee,4.609
+"Chicago, IL",Wrangler,8.26
+"Los Angeles, CA",Wrangler,9.271
+"San Francisco, CA",Wrangler,9.236
+"New York, NY",Wrangler,8.597
+"Houston, TX",Wrangler,8.772
+"Chicago, IL",Accord,5.419
+"Los Angeles, CA",Accord,6.118
+"San Francisco, CA",Accord,5.81
+"New York, NY",Accord,5.849
+"Houston, TX",Accord,5.688
+"Chicago, IL",CR-V,6.162
+"Los Angeles, CA",CR-V,6.171
+"San Francisco, CA",CR-V,6.482
+"New York, NY",CR-V,5.815
+"Houston, TX",CR-V,6.0
+"Chicago, IL",Silverado 1500,6.61
+"Los Angeles, CA",Silverado 1500,6.083
+"San Francisco, CA",Silverado 1500,8.675
+"New York, NY",Silverado 1500,6.4
+"Houston, TX",Silverado 1500,5.899
+"Chicago, IL",Civic,5.638
+"Los Angeles, CA",Civic,6.496
+"San Francisco, CA",Civic,6.37
+"New York, NY",Civic,5.91
+"Houston, TX",Civic,5.853
+"Chicago, IL",Corolla,6.645
+"Los Angeles, CA",Corolla,6.808
+"San Francisco, CA",Corolla,7.773
+"New York, NY",Corolla,6.961
+"Houston, TX",Corolla,7.773
+"Chicago, IL",Highlander,5.807
+"Los Angeles, CA",Highlander,5.653
+"San Francisco, CA",Highlander,5.058
+"New York, NY",Highlander,5.342
+"Houston, TX",Highlander,6.41

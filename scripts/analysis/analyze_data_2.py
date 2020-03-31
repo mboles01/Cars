@@ -7,12 +7,13 @@ Created on Sun Jan 19 20:30:31 2020
 """
 
 # set up working directory
-import os
-os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Depreciator/scripts') 
+import os, sys
+os.chdir('/Users/michaelboles/Michael/Coding/2020/Insight/Project/Cars')
+sys.path.append('./scripts/data visualization') 
 
 # open listings data
 import pandas as pd
-listings_data = pd.read_csv('../data/clean/all_listings_clean_2.csv')
+listings_data = pd.read_csv('./data/listings5.csv')
 fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_6_clean.csv')
 emp_data = pd.read_csv('../data/depreciation/depreciation_all_models/emp_data_6.csv')
 pred_data = pd.read_csv('../data/depreciation/depreciation_all_models/pred_data_6.csv')
@@ -32,20 +33,21 @@ model_counts_filtered = fit_data_filtered.merge(model_counts.reset_index(), on='
 
 ### user input ###
 data = listings_data
-newerthan = 1995
-model = 'Accord'
+newerthan = 1985
+model = 'FJ Cruiser'
 
-# random generator
-import numpy.random as npr
-model = model_counts_filtered.iloc[npr.randint(0,len(model_counts_filtered))][2]
-print(model)
-
-
+# # random generator
+# import numpy.random as npr
+# model = model_counts_filtered.iloc[npr.randint(0,len(model_counts_filtered))][2]
+# print(model)
 
 ### first plot: price versus age with fit ###
 counter = 1
-from plotfunctions import plot_depr_age
-plot_depr_age(data, model, newerthan, counter, save=False)
+counts = len(listings_data[listings_data['Model'] == model])
+alpha = 0.1
+b_lower = 0
+from plotfunctions_1_FJ import plot_depr_age
+plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save=True)
 
 
 
