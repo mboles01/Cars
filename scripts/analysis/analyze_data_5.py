@@ -137,6 +137,9 @@ plt.show()
 
 # Box plot: half life across cities
 
+# load data
+depr_by_location = pd.read_csv('../data/depr_by_location.csv')
+
 # Determine order
 order = depr_by_location.groupby('Location').median().sort_values(by='Half life',ascending=True)
 
@@ -161,12 +164,12 @@ ax = sns.stripplot(x = 'Location',
                    linewidth = 3, edgecolor = 'black', alpha = 0.5)
 
 # set axis properties
-plt.xticks(rotation=45, fontname = 'Helvetica', fontsize = 42, ha = 'right')
-plt.yticks(fontname = 'Helvetica', fontsize = 42)
+plt.xticks(rotation=45, fontname = 'Helvetica', fontsize = 35, ha = 'right')
+plt.yticks(fontname = 'Helvetica', fontsize = 35)
 # plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'))
 
-plt.xlabel('Location', fontsize = 55, fontname = 'Arial', fontweight = 'bold')
-plt.ylabel('Half-life (years)', fontsize = 55, fontname = 'Arial', 
+plt.xlabel('Location', fontsize = 40, fontname = 'Arial', fontweight = 'bold')
+plt.ylabel('Half-life (years)', fontsize = 40, fontname = 'Arial', 
            fontweight = 'bold')
 
 ax.set_ylim(4, 10); ax.yaxis.labelpad = 25

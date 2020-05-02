@@ -161,8 +161,8 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     car_model_data_2 = car_model_data_1[car_model_data_1['Year'] > newerthan]
     
     # create dataframe with age and list price
-    age_listprice = pd.DataFrame({'Age': 2020 - car_model_data_1['Year'],
-                              'List Price': car_model_data_1['Price'],
+    age_listprice = pd.DataFrame({'Age': 2020 - car_model_data_2['Year'],
+                              'List Price': car_model_data_2['Price'],
                               })
     
     # group all listings by year, taking median value for curve fitting
@@ -200,18 +200,7 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     ss_res_all = np.sum(residuals_all**2)   # residual sum of squares
     ss_tot_all = np.sum((age_listprice_predprice['List Price'] - np.mean(age_listprice_predprice['List Price']))**2)   # total sum of squares
     r_squared_all = 1 - (ss_res_all / ss_tot_all)
-    
-    # # get fit quality data (diff bw median price and predicted value)
-    # year_age_median_predicted_price = year_age_median_price.merge(price_predicted, on='Age', how='left')    
-    # residuals_median = year_age_median_predicted_price['Predicted Price'] - year_age_median_predicted_price['Median Price']
-    # ss_res_median = np.sum(residuals_median**2)   # residual sum of squares
-    # ss_tot_median = np.sum((year_age_median_price['Median Price'] - np.mean(year_age_median_price['Median Price']))**2)   # total sum of squares
-    # r_squared_median = 1 - (ss_res_median / ss_tot_median)
-        
-    # # store fit data in dataframe
-    # fit_data_temp = pd.DataFrame(data = [[counter, make, model, popt[0], popt[1], popt[2], r_squared_median, r_squared_all]])
-    # fit_data = pd.concat([fit_data, fit_data_temp], ignore_index=True)
-        
+            
     # plot scatter data
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
@@ -273,7 +262,7 @@ def plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save)
     
     # save figure
     if save == True:
-        figure_name = './images/depr_by_model/' + str(counter) + '_' + str(model) + '.png'
+        figure_name = '../images/depr_by_model/' + str(counter) + '_' + str(model) + '.png'
         plt.savefig(figure_name, dpi = 600)
     else:
         pass

@@ -13,7 +13,7 @@ sys.path.append('./scripts/data visualization')
 
 # open listings data
 import pandas as pd
-listings_data = pd.read_csv('./data/listings5.csv')
+listings_data = pd.read_csv('../data/listings5.csv')
 fit_data = pd.read_csv('../data/depreciation/depreciation_all_models/fit_data_6_clean.csv')
 emp_data = pd.read_csv('../data/depreciation/depreciation_all_models/emp_data_6.csv')
 pred_data = pd.read_csv('../data/depreciation/depreciation_all_models/pred_data_6.csv')
@@ -33,8 +33,8 @@ model_counts_filtered = fit_data_filtered.merge(model_counts.reset_index(), on='
 
 ### user input ###
 data = listings_data
-newerthan = 1985
-model = 'FJ Cruiser'
+newerthan = 1995
+model = 'Wrangler'
 
 # # random generator
 # import numpy.random as npr
@@ -46,8 +46,8 @@ counter = 1
 counts = len(listings_data[listings_data['Model'] == model])
 alpha = 0.1
 b_lower = 0
-from plotfunctions_1_FJ import plot_depr_age
-plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save=True)
+from plotfunctions_1 import plot_depr_age
+plot_depr_age(data, model, newerthan, b_lower, counter, counts, alpha, save=False)
 
 
 

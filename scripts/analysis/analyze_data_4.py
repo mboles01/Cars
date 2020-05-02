@@ -37,7 +37,7 @@ xlabel = 'Half life (years)'
 ylabel = 'Counts (number of car models)'
 figure_name = '../images/Depreciation_hist.png'
 
-from plotfunctions import plot_hist
+from plotfunctions_1 import plot_hist
 plot_hist(data, binwidth, textbox, props, xmin, xmax, ymin, ymax, xlabel, ylabel, figure_name)
 
 
@@ -86,7 +86,7 @@ plt.yticks(fontname = 'Helvetica', fontsize = 42)
 
 
 plt.xlabel('Car make', fontsize = 55, fontname = 'Arial', fontweight = 'bold')
-plt.ylabel('Half life (years)', fontsize = 55, fontname = 'Arial', 
+plt.ylabel('Half-life (years)', fontsize = 55, fontname = 'Arial', 
            fontweight = 'bold')
 
 ax.set_ylim(2, 8); ax.yaxis.labelpad = 25
@@ -112,7 +112,7 @@ depr_order_brand = depr_summary.groupby('Body').median().sort_values(by='Half li
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots(1, 1, figsize = (14,14))
+fig, ax = plt.subplots(1, 1, figsize = (14, 14))
 
 ax = sns.boxplot(x = 'Body', 
                  y = 'Half life', 
@@ -131,12 +131,12 @@ ax = sns.stripplot(x = 'Body',
 # set axis properties
 import numpy as np
 plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'),
-    rotation=45, fontname = 'Helvetica', fontsize = 42, ha = 'right')
-plt.yticks(fontname = 'Helvetica', fontsize = 42)
+    rotation=45, fontname = 'Helvetica', fontsize = 35, ha = 'right')
+plt.yticks(fontname = 'Helvetica', fontsize = 35)
 # plt.xticks(np.arange(5), ('SUV', 'Sedan', 'Van', 'Coupe', 'Truck'))
 
-plt.xlabel('Body type', fontsize = 55, fontname = 'Arial', fontweight = 'bold')
-plt.ylabel('Half life (years)', fontsize = 55, fontname = 'Arial', 
+plt.xlabel('Body type', fontsize = 40, fontname = 'Arial', fontweight = 'bold')
+plt.ylabel('Half-life (years)', fontsize = 40, fontname = 'Arial', 
            fontweight = 'bold')
 
 ax.set_ylim(0, 10); ax.yaxis.labelpad = 25
